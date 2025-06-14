@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery - Professional Portfolio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --gold-color: #f39c12;
+            --dark-bg: #1a1a1a;
+            --card-bg: #ffffff;
+            --text-light: #7f8c8d;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        linear-gradient(135deg, #d4af37 0%, #f4e5c2 50%, #d4af37 100%);
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 70%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .gallery-container {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 50px;
+        }
+
+        .filter-btn {
+            background: rgba(0,0,0,0.1);
+            border: 2px solid rgba(0,0,0,0.2);
+            color: #333;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--gold-color);
+            border-color: var(--gold-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .photo-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .photo-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px var(--shadow-dark);
+        }
+
+        .image-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .photo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .photo-card:hover .photo-image {
+            transform: scale(1.1);
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(52, 152, 219, 0.8), rgba(231, 76, 60, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-card:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .overlay-content {
+            text-align: center;
+            color: white;
+        }
+
+        .view-btn {
+            background: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .view-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.3);
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .card-description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .meta-icon {
+            color: var(--secondary-color);
+            width: 16px;
+        }
+
+        .category-badge {
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 2;
+        }
+
+        .img-placeholder {
+            height: 280px;
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .placeholder-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: white;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .empty-description {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 40px auto;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid rgba(0,0,0,0.2);
+            border-radius: 25px;
+            background: rgba(0,0,0,0.05);
+            color: #333;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(0,0,0,0.5);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--gold-color);
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(0,0,0,0.5);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .photo-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 0 15px;
+            }
+            
+            .filter-tabs {
+                padding: 0 15px;
+            }
+            
+            .card-meta {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">My Creative Work</h1>
+            <p class="hero-subtitle">Capturing moments, creating memories</p>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-container">
+        <div class="container-fluid">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Cari Berdasarkan Kategori..." id="searchInput">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-btn active" data-category="all">Semua Kategori</button>
+                <button class="filter-btn" data-category="portrait">Portrait</button>
+                <button class="filter-btn" data-category="travel">Travel</button>
+                <button class="filter-btn" data-category="wedding">Wedding</button>
+                <button class="filter-btn" data-category="nature">Nature</button>
+                <button class="filter-btn" data-category="street">Street</button>
+            </div>
+
+            {% if photos %}
+                <div class="photo-grid" id="photoGrid">
+                    {% for photo in photos %}
+                    <div class="photo-card fade-in" 
+                         data-category="{{ photo.category.name|lower|default:'uncategorized' }}"
+                         data-title="{{ photo.title|default:'Untitled'|lower }}"
+                         data-photographer="{{ photo.photographer.name|default:'Unknown'|lower }}"
+                         data-index="{{ forloop.counter0 }}">
+                        
+                        <div class="image-container">
+                            {% if photo.category %}
+                                <div class="category-badge">{{ photo.category.name }}</div>
+                            {% endif %}
+                            
+                            {% if photo.image_url %}
+                                <img src="{{ photo.image_url.url }}" 
+                                     class="photo-image" 
+                                     alt="{{ photo.title|default:'Photo' }}"
+                                     loading="lazy">
+                            {% else %}
+                                <div class="img-placeholder">
+                                    <i class="fas fa-image placeholder-icon"></i>
+                                    <span>No Image Available</span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="image-overlay">
+                                <div class="overlay-content">
+                                    <i class="fas fa-eye" style="font-size: 2rem;"></i>
+                                    <button class="view-btn" 
+                                            onclick="openLightbox('{{ photo.image_url.url|escapejs }}', '{{ photo.title|default:'Untitled'|escapejs }}')">
+                                        View Full Size
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-content">
+                            <h3 class="card-title">{{ photo.title|default:"Untitled Photo" }}</h3>
+                            <p class="card-description">
+                                {{ photo.description|default:"A beautiful captured moment"|truncatewords:20 }}
+                            </p>
+                            
+                            <div class="card-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-user meta-icon"></i>
+                                    <span>{{ photo.photographer.name|default:"Unknown Artist" }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar meta-icon"></i>
+                                    <span>{{ photo.shoot_date|date:"M j, Y"|default:"Recently" }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-upload meta-icon"></i>
+                                    <span>{{ photo.created_at|timesince }} ago</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-heart meta-icon"></i>
+                                    <span>Professional Shot</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-camera empty-icon" style="color: #666;"></i>
+                    <h2 class="empty-title" style="color: #333;">No Photos Yet</h2>
+                    <p class="empty-description" style="color: #666;">
+                        The gallery is waiting for your amazing shots. Upload some photos to get started!
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div class="modal fade" id="lightboxModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-white" id="lightboxTitle">Photo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-0">
+                    <img id="lightboxImage" class="img-fluid" src="" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const photoCards = document.querySelectorAll('.photo-card');
+        const searchInput = document.getElementById('searchInput');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                filterPhotos(category, searchInput.value);
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const activeCategory = document.querySelector('.filter-btn.active').dataset.category;
+            filterPhotos(activeCategory, e.target.value);
+        });
+
+        function filterPhotos(category, searchTerm) {
+            photoCards.forEach((card, index) => {
+                const cardCategory = card.dataset.category;
+                const cardTitle = card.dataset.title;
+                const cardPhotographer = card.dataset.photographer;
+                
+                const matchesCategory = category === 'all' || cardCategory === category;
+                const matchesSearch = searchTerm === '' || 
+                    cardTitle.includes(searchTerm.toLowerCase()) || 
+                    cardPhotographer.includes(searchTerm.toLowerCase());
+                
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'block';
+                    card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s both`;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Lightbox functionality
+        function openLightbox(imageSrc, title) {
+            document.getElementById('lightboxImage').src = imageSrc;
+            document.getElementById('lightboxTitle').textContent = title;
+            const modal = new bootstrap.Modal(document.getElementById('lightboxModal'));
+            modal.show();
+        }
+
+        // Intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const index = parseInt(entry.target.dataset.index) || 0;
+                    const delay = (index % 6) * 100; // Stagger animation based on index
+                    
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, delay);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all photo cards
+        photoCards.forEach(card => {
+            // Initialize cards as invisible
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            
+            observer.observe(card);
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NobleStudio- Photography Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'playfair': ['"Playfair Display"', 'serif'],
+                        'raleway': ['Raleway', 'sans-serif'],
+                    },
+                    colors: {
+                        'photo-dark': '#1a1a1a',
+                        'photo-light': '#f8f8f8',
+                        'photo-gold': '#d4af37',
+                    }
+                }
+            }
+        }
+        
+    </script>
+</head>
+<body class="bg-photo-light font-raleway text-photo-dark">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md fixed w-full z-10 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold font-playfair text-photo-gold">NobleStudio</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-photo-dark hover:text-photo-gold transition">Beranda</a>
+                    <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition">Portfolio</a>
+                    <a href="#about" class="text-photo-dark hover:text-photo-gold transition">Tentang Saya</a>
+                    <a href="#services" class="text-photo-dark hover:text-photo-gold transition">Layanan</a>
+                    <a href="schedule" class="text-photo-dark hover:text-photo-gold transition">Lihat Jadwal</a>
+                    <a href="#contact" class="bg-photo-gold text-white px-4 py-2 rounded hover:bg-opacity-90 transition">Kontak</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button class="mobile-menu-button">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-playfair font-bold mb-6">Capturing Life's <span class="text-photo-gold">Beautiful</span> Moments</h1>
+                <p class="text-lg mb-8 text-gray-600">Layanan fotografi profesional yang mengkhususkan diri dalam potret, pernikahan, dan pekerjaan komersial. Berkantor pusat di Kudus.</p>
+                <div class="flex space-x-4">
+                    <a href="#portfolio" class="bg-photo-gold text-white px-6 py-3 rounded hover:bg-opacity-90 transition">Tampilkan Portfolio</a>
+                    <a href="booking" class="border border-photo-dark text-photo-dark px-6 py-3 rounded hover:bg-photo-dark hover:text-white transition">Jadwalkan Sesi</a>
+                </div>
+            </div>
+            <div class="relative">
+                <div class="relative aspect-square overflow-hidden rounded-lg shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Photographer at work" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -bottom-6 -right-6 bg-white p-4 shadow-lg rounded-lg hidden md:block">
+                    <p class="font-bold text-photo-gold">5+ Tahun Pengalaman</p>
+                    <p class="text-sm text-gray-500">Fotografi Profesional</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-16 bg-photo-dark text-white px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-4">Portfolio</h2>
+                <p class="max-w-2xl mx-auto text-gray-300">Jelajahi karya terbaru saya di berbagai genre fotografi</p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="group relative overflow-hidden rounded-lg aspect-square">
+                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Portrait photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-bold text-xl">Portraits</span>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-lg aspect-square">
+                    <img src="https://images.unsplash.com/photo-1523438885200-e635ba2c371e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Wedding photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-bold text-xl">Weddings</span>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-lg aspect-square">
+                    <img src="https://images.unsplash.com/photo-1462826303086-329426d1aef5?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Commercial photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-bold text-xl">Commercial</span>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-lg aspect-square">
+                    <img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Fashion photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-bold text-xl">Fashion</span>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-lg aspect-square">
+                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Travel photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-bold text-xl">Travel</span>
+                    </div>
+                </div>
+                <div class="group relative overflow-hidden rounded-lg aspect-square">
+                    <img src="https://images.unsplash.com/photo-1493863641943-9b68992a8d07?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Event photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-bold text-xl">Events</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="/myporto" class="inline-block border border-white text-white px-6 py-3 rounded hover:bg-white hover:text-photo-dark transition">View Full Portfolio</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="order-2 md:order-1">
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-6">Tentang Saya</h2>
+                <p class="text-lg mb-4">Berawal dari rasa ingin tahu yang besar terhadap dunia fotografi sejak tahun 2006, saya memulai perjalanan ini secara autodidak — belajar dari berbagai sumber dan aktif mengikuti seminar-seminar fotografi.</p>
+                <p class="mb-6 text-gray-600">Setelah enam tahun mendalami dan mengasah kemampuan, saya akhirnya memberanikan diri untuk mendirikan vendor fotografi sendiri pada tahun 2012. Sejak saat itu, saya terus berkomitmen untuk menangkap setiap momen berharga dengan sentuhan profesional dan penuh rasa.</p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="border-l-2 border-photo-gold pl-4">
+                        <p class="font-bold text-2xl">500+</p>
+                        <p class="text-gray-500">Clients</p>
+                    </div>
+                    <div class="border-l-2 border-photo-gold pl-4">
+                        <p class="font-bold text-2xl">100+</p>
+                        <p class="text-gray-500">Events</p>
+                    </div>
+                    <div class="border-l-2 border-photo-gold pl-4">
+                        <p class="font-bold text-2xl">1</p>
+                        <p class="text-gray-500">Countries</p>
+                    </div>
+                    <div class="border-l-2 border-photo-gold pl-4">
+                        <p class="font-bold text-2xl">50+</p>
+                        <p class="text-gray-500">Exhibitions</p>
+                    </div>
+                </div>
+                
+                <a href="#contact" class="bg-photo-gold text-white px-6 py-3 rounded hover:bg-opacity-90 transition">Get in Touch</a>
+            </div>
+            <div class="order-1 md:order-2">
+                <div class="relative aspect-square overflow-hidden rounded-lg shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Photographer portrait" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-gray-50 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-4">Services</h2>
+                <p class="max-w-2xl mx-auto text-gray-600">Layanan fotografi profesional yang disesuaikan dengan kebutuhan Anda</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-photo-gold/10 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Portrait Photography</h3>
+                    <p class="text-gray-600 mb-4">Sesi potret profesional untuk perorangan, pasangan, dan keluarga. Sempurna untuk pencitraan merek pribadi atau mengabadikan momen spesial.</p>
+                    <p class="font-bold text-photo-gold">Dimulai dari Rp 1.000.000</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-photo-gold/10 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Wedding Photography</h3>
+                    <p class="text-gray-600 mb-4">Paket fotografi pernikahan lengkap untuk mengabadikan hari istimewa Anda dari persiapan hingga resepsi.</p>
+                    <p class="font-bold text-photo-gold">Dimulai dari Rp 2.000.000 tergantung paket</p>
+                </div>
+                
+                <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
+                    <div class="w-16 h-16 bg-photo-gold/10 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Commercial Photography</h3>
+                    <p class="text-gray-600 mb-4">Fotografi produk dan komersial berkualitas tinggi untuk bisnis, merek, dan kampanye pemasaran.</p>
+                    <p class="font-bold text-photo-gold">Dimulai dari Rp 2.000.000</p>
+                </div>
+                <div class="md:col-span-3 flex justify-start items-center">
+                    <p class="text-xl text-gray-500 italic">Note: Harga paket fotografi dapat berubah sewaktu-waktu. Hubungi kami untuk detail paket dan konfirmasi harga terbaru.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Testimonial Trigger Button -->
+        <div class="text-center mb-16">
+            <button onclick="openTestimonialModal()" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-800 transition-all duration-300 shadow-lg hover:shadow-xl mb-10">
+                Bagikan Pengalaman Anda
+            </button>
+
+            <!-- Judul Testimonial -->
+            <h2 class="text-4xl md:text-5xl font-playfair font-bold mb-4">Client Experiences</h2>
+            <div class="w-20 h-1 bg-photo-gold mx-auto mb-6"></div>
+            <p class="max-w-2xl mx-auto text-gray-300 text-lg">Jangan hanya percaya pada apa yang kami katakan - dengarkan apa yang dikatakan klien kami</p>
+        </div>
+
+        <!-- Daftar Testimonial -->
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for t in testimonials %}
+            <div class="bg-white/5 p-8 rounded-xl backdrop-blur-sm border border-white/10 hover:border-photo-gold/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-2 group">
+                <div class="flex items-center mb-6">
+                    <div class="w-14 h-14 rounded-full overflow-hidden mr-4 border-2 border-photo-gold/50 group-hover:border-photo-gold transition-all duration-300">
+                        <img src="{{ t.photo.url }}" alt="{{ t.name }}" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg">{{ t.name }}</h4>
+                        <p class="text-sm text-gray-300">{{ t.role }}{% if t.company %} at {{ t.company }}{% endif %}</p>
+                    </div>
+                </div>
+                <p class="italic text-gray-200 mb-6">"{{ t.message }}"</p>
+                <div class="flex text-photo-gold text-xl">
+                    {% for i in "12345"|slice:":t.rating" %}
+                        <span>★</span>
+                    {% endfor %}
+                    {% if t.rating < 5 %}
+                        {% for i in "12345"|slice:t.rating %}
+                            <span class="text-gray-500">☆</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="mt-6 pt-6 border-t border-white/10">
+                    <svg class="w-8 h-8 text-photo-gold opacity-70" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                    </svg>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Testimonial Modal/Popup -->
+        <div id="testimonialModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- Background overlay -->
+                <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                    <div class="absolute inset-0 bg-black opacity-75" onclick="closeTestimonialModal()"></div>
+                </div>
+
+                <!-- Modal content - Perhatikan penambahan text-gray-900 -->
+                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full text-gray-900">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                        <form id="testimonialForm" method="post" enctype="multipart/form-data" class="space-y-6">
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                <h3 class="text-2xl leading-6 font-bold text-gray-900 mb-6 font-playfair">
+                                    Share Your Experience
+                                </h3>
+                                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                                    {% csrf_token %}
+                                    <div class="grid md:grid-cols-2 gap-6">
+                                        <div class="space-y-2">
+                                            <label for="id_name" class="block text-sm font-medium text-gray-900">Full Name</label>
+                                            <input type="text" name="name" id="id_name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Jane Doe" required>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label for="id_role" class="block text-sm font-medium text-gray-900">Your Role/Position</label>
+                                            <input type="text" name="role" id="id_role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Marketing Manager at XYZ Company" required>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label for="id_company" class="block text-sm font-medium text-gray-900">Company (Optional)</label>
+                                            <input type="text" name="company" id="id_company" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="XYZ Corporation">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label for="id_rating" class="block text-sm font-medium text-gray-700">Rating (1-5)</label>
+                                            <select name="rating" id="id_rating" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                                                <option value="" disabled selected>Select your rating</option>
+                                                <option value="1">1 Star</option>
+                                                <option value="2">2 Stars</option>
+                                                <option value="3">3 Stars</option>
+                                                <option value="4">4 Stars</option>
+                                                <option value="5">5 Stars</option>
+                                            </select>
+                                        </div>
+                                        <div class="space-y-2 md:col-span-2">
+                                            <label for="id_message" class="block text-sm font-medium text-gray-900">Your Testimonial</label>
+                                            <textarea name="message" id="id_message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Share your experience working with us..." required></textarea>
+                                        </div>
+                                        <div class="space-y-2 md:col-span-2">
+                                            <label for="id_photo" class="block text-sm font-medium text-gray-700">Your Photo</label>
+                                            <input type="file" name="photo" id="id_photo" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" accept="image/*">
+                                            <p class="text-xs text-gray-500">Upload a professional headshot (recommended size: 500x500px)</p>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" form="testimonialForm" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-700 text-base font-medium text-white hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Submit Testimonial
+                        </button>
+                        <button type="button" onclick="closeTestimonialModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancel
+                        </button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript for Modal -->
+        <script>
+            function openTestimonialModal() {
+                document.getElementById('testimonialModal').classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+            
+            function closeTestimonialModal() {
+                document.getElementById('testimonialModal').classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+            
+            // Close modal when pressing Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeTestimonialModal();
+                }
+            });
+        </script>
+    </div>
+</section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12">
+            <div>
+                <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-6">Get in Touch</h2>
+                <p class="mb-8 text-gray-600">Tertarik untuk bekerja sama? Isi formulir atau hubungi saya langsung menggunakan informasi di bawah ini.</p>
+                
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 bg-photo-gold/10 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Phone</h4>
+                            <p class="text-gray-600">+62 857-4005-0060</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 bg-photo-gold/10 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Email</h4>
+                            <p class="text-gray-600">noblestudio@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 bg-photo-gold/10 rounded-full flex items-center justify-center mr-4">
+                            <svg class="w-5 h-5 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Studio</h4>
+                            <p class="text-gray-600">Jl. Sedap Malam No.3, RT.03/RW.02, Ledok, Karangmalang, Kec. Gebog, Kabupaten Kudus, Jawa Tengah 59354 Indonesia</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h4 class="font-bold mb-4">Follow Me</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://wa.me/6285740050060" target="_blank" class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center hover:bg-green-600 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.52 3.48A11.76 11.76 0 0 0 12.03 0C5.42 0 .07 5.35.07 11.95c0 2.1.55 4.15 1.6 5.96L0 24l6.26-1.63a12 12 0 0 0 5.77 1.47h.01c6.6 0 11.95-5.36 11.95-11.96 0-3.2-1.25-6.2-3.47-8.4zm-8.48 17.6c-1.8 0-3.56-.48-5.1-1.39l-.37-.22-3.72.97.99-3.63-.24-.38a9.9 9.9 0 0 1-1.56-5.36c0-5.47 4.45-9.91 9.92-9.91 2.65 0 5.13 1.03 7 2.9a9.85 9.85 0 0 1 2.91 7c0 5.47-4.45 9.92-9.91 9.92zm5.48-7.45c-.3-.15-1.77-.87-2.05-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.18-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.48-1.77-1.65-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.59-.48-.5-.67-.5h-.57c-.2 0-.52.07-.8.37-.27.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.14 3.28 5.2 4.6.73.31 1.3.5 1.74.63.73.23 1.4.2 1.93.12.59-.09 1.77-.73 2.02-1.43.25-.7.25-1.3.17-1.43-.07-.12-.27-.2-.57-.35z"/>
+                            </svg>
+                        </a>
+
+                        <a href="https://www.instagram.com/noble_potography?igsh=MTZ1OWhpM3l5NzNrdg==" class="w-10 h-10 bg-photo-dark text-white rounded-full flex items-center justify-center hover:bg-photo-gold transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"></path>
+                            </svg>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-photo-dark text-white rounded-full flex items-center justify-center hover:bg-photo-gold transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <form   action="https://formspree.io/f/myzjyakl" method="POST" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded focus:ring-photo-gold focus:border-photo-gold">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded focus:ring-photo-gold focus:border-photo-gold">
+                </div>
+
+                <div>
+                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <input type="text" id="subject" name="subject" class="w-full px-4 py-3 border border-gray-300 rounded focus:ring-photo-gold focus:border-photo-gold">
+                </div>
+
+                <div>
+                    <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                    <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded focus:ring-photo-gold focus:border-photo-gold"></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-photo-gold text-white px-6 py-3 rounded hover:bg-opacity-90 transition">Send Message</button>
+            </form>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-photo-dark text-white py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <span class="text-xl font-bold font-playfair text-photo-gold">NobleStudio </span>
+                    <p class="text-sm text-gray-400 mt-1">Capturing moments, creating memories.</p>
+                </div>
+                
+                <div class="text-sm text-gray-400">
+                    <p>&copy; 2023 NobleStudio Photography. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple mobile menu toggle
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.createElement('div');
+        mobileMenu.className = 'md:hidden hidden bg-white w-full absolute left-0 px-4 py-2 shadow-lg';
+        mobileMenu.innerHTML = `
+            <div class="flex flex-col space-y-2 py-2">
+                <a href="#home" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">Home</a>
+                <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">Portfolio</a>
+                <a href="#about" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">About</a>
+                <a href="#services" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">Services</a>
+                <a href="#contact" class="text-photo-gold px-2 py-1">Contact</a>
+            </div>
+        `;
+        document.body.appendChild(mobileMenu);
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
