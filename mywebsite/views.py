@@ -60,7 +60,7 @@ def booking_view(request):
     return render(request, 'booking.html', {'form': form})
 
 def booking_calendar(request):
-    bookings = Booking.objects.all()
+    bookings = Booking.objects.filter(approved='approved')  # hanya booking yang sudah di-approve
 
     events = [
         {
@@ -71,8 +71,7 @@ def booking_calendar(request):
         for booking in bookings
     ]
 
-    print("EVENTS:", events)  # Debug di terminal Django
     context = {
-        'events': json.dumps(events)  # Tanpa encoder khusus dulu
+        'events': json.dumps(events)
     }
     return render(request, 'schedule.html', context)
