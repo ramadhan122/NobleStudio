@@ -96,7 +96,7 @@
                     <h2 class="text-3xl font-display text-gray-800 mb-8">Mulai Jadwalkan Sesi Kamu</h2>
                     <form method="POST" class="space-y-6">
                         {% csrf_token %}
-                        
+
                         <!-- Custom form rendering instead of form.as_p -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {% for field in form %}
@@ -137,18 +137,41 @@
             background-color: #f8fafc;
             transition: all 0.2s;
         }
-        
+
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #d4af37;
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
             background-color: white;
         }
-        
+
         textarea {
             min-height: 120px;
             resize: vertical;
         }
     </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if show_login_alert %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: '🔒 Login Required',
+            text: 'You need to login to make a booking.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: '🚀 Login Now',
+            cancelButtonText: '← Go Back'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/auth/login/?next=/booking/';
+            } else {
+                window.location.href = '/';
+            }
+        });
+    });
+    </script>
+    {% endif %}
 </body>
-</html>     
+</html>

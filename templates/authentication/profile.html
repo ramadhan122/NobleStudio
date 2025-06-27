@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - {{ user.username }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .profile-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        .profile-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            margin: 0 auto 20px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-custom {
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .info-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|upper|default:"" }}
+                </div>
+                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                <p class="mb-0">@{{ user.username }}</p>
+            </div>
+
+            <div class="p-4">
+                <!-- Navigation -->
+                <nav class="mb-4">
+                    <div class="nav nav-pills justify-content-center" role="tablist">
+                        <a class="nav-link active" data-bs-toggle="pill" href="#edit-profile">
+                            <i class="fas fa-edit me-2"></i>Edit Profile
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#account-info">
+                            <i class="fas fa-info-circle me-2"></i>Account Info
+                        </a>
+                        <a class="nav-link" data-bs-toggle="pill" href="#security">
+                            <i class="fas fa-shield-alt me-2"></i>Security
+                        </a>
+                    </div>
+                </nav>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Edit Profile Tab -->
+                    <div class="tab-pane fade show active" id="edit-profile">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label for="first_name" class="form-label fw-bold">First Name</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name"
+                                           value="{{ user.first_name }}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="last_name" class="form-label fw-bold">Last Name</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name"
+                                           value="{{ user.last_name }}" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="email" class="form-label fw-bold">Email Address</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           value="{{ user.email }}" required>
+                                </div>
+                                <div class="col-12">
+                                    <label for="username" class="form-label fw-bold">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                           value="{{ user.username }}" readonly>
+                                    <small class="form-text text-muted">Username cannot be changed</small>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-custom">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                    <a href="{% url 'authentication:dashboard' %}" class="btn btn-secondary btn-custom ms-2">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Account Info Tab -->
+                    <div class="tab-pane fade" id="account-info">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="info-card">
+                                    <h6 class="fw-bold text-primary">
+                                        <i class="fas fa-user me-2"></i>Account Details
+                                    </h6>
+                                    <p><strong>Username:</strong> {{ user.username }}</p>
+                                    <p><strong>Email:</strong> {{ user.email }}</p>
+                                    <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                                    <p><strong>Member Since:</strong> {{ user.date_joined|date:"F d, Y" }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-card">
+                                    <h6 class="fw-bold text-success">
+                                        <i class="fas fa-chart-line me-2"></i>Activity Stats
+                                    </h6>
+                                    <p><strong>Last Login:</strong> {{ user.last_login|date:"F d, Y H:i"|default:"Never" }}</p>
+                                    <p><strong>Account Status:</strong>
+                                        <span class="badge bg-success">Active</span>
+                                        {% if user.is_staff %}<span class="badge bg-warning ms-1">Staff</span>{% endif %}
+                                    </p>
+                                    <p><strong>Email Verified:</strong>
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i>Verified
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div class="tab-pane fade" id="security">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="info-card">
+                                    <h6 class="fw-bold text-danger">
+                                        <i class="fas fa-shield-alt me-2"></i>Security Settings
+                                    </h6>
+                                    <p class="text-muted">Manage your account security and authentication preferences.</p>
+
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Password</h6>
+                                                <p class="mb-1 text-muted">Last changed: Unknown</p>
+                                            </div>
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-key me-1"></i>Change Password
+                                            </button>
+                                        </div>
+
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">JWT Tokens</h6>
+                                                <p class="mb-1 text-muted">Active authentication tokens</p>
+                                            </div>
+                                            <a href="{% url 'authentication:user_info' %}" class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-eye me-1"></i>View Tokens
+                                            </a>
+                                        </div>
+
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Login Sessions</h6>
+                                                <p class="mb-1 text-muted">Manage active sessions</p>
+                                            </div>
+                                            <button class="btn btn-outline-warning btn-sm">
+                                                <i class="fas fa-sign-out-alt me-1"></i>Logout All
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('input[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+            }
+        });
+
+        // Real-time validation
+        document.querySelectorAll('input[required]').forEach(input => {
+            input.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
