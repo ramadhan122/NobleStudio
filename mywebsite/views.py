@@ -48,7 +48,16 @@ def myporto(request):
         'photographers': photographers
     })
 
+
 def booking_view(request):
+    # Cek login di Python
+    if not request.user.is_authenticated:
+        return render(request, 'booking.html', {
+            'show_login_alert': True,
+            'form': None
+        })
+
+    # User sudah login, tampilkan form
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
@@ -57,7 +66,11 @@ def booking_view(request):
             return redirect('booking')
     else:
         form = BookingForm()
-    return render(request, 'booking.html', {'form': form})
+
+    return render(request, 'booking.html', {
+        'form': form,
+        'show_login_alert': False
+    })
 
 def booking_calendar(request):
     bookings = Booking.objects.filter(approved='approved')  # hanya booking yang sudah di-approve
