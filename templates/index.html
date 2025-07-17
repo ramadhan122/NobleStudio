@@ -22,34 +22,61 @@
                 }
             }
         }
-        
+
     </script>
 </head>
 <body class="bg-photo-light font-raleway text-photo-dark">
     <!-- Navigation -->
     <nav class="bg-white/80 backdrop-blur-md fixed w-full z-10 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-xl font-bold font-playfair text-photo-gold">NobleStudio</span>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+        <div class="flex items-center">
+            <span class="text-xl font-bold font-playfair text-photo-gold">NobleStudio</span>
+        </div>
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="/" class="text-photo-dark hover:text-photo-gold transition">Beranda</a>
+            <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition">Portfolio</a>
+            <a href="#about" class="text-photo-dark hover:text-photo-gold transition">Tentang Saya</a>
+            <a href="#services" class="text-photo-dark hover:text-photo-gold transition">Layanan</a>
+            <a href="schedule" class="text-photo-dark hover:text-photo-gold transition">Lihat Jadwal</a>
+            <a href="contact" class="text-photo-dark hover:text-photo-gold transition">Kontak</a>
+
+            <div class="flex items-center space-x-4">
+            {% if not user.is_authenticated %}
+                <div class="text-right">
+                <a href="{% url 'authentication:register' %}"
+                    class="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg transform hover:scale-105 transition">
+                    <i class="fas fa-user-plus me-2"></i>Get Started
+                </a>
+                <a href="{% url 'authentication:login' %}"
+                    class="inline-block border-2 border-yellow-500 text-yellow-500 font-semibold py-2 px-6 rounded-full hover:bg-yellow-500 hover:text-white transition">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </a>
                 </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-photo-dark hover:text-photo-gold transition">Beranda</a>
-                    <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition">Portfolio</a>
-                    <a href="#about" class="text-photo-dark hover:text-photo-gold transition">Tentang Saya</a>
-                    <a href="#services" class="text-photo-dark hover:text-photo-gold transition">Layanan</a>
-                    <a href="schedule" class="text-photo-dark hover:text-photo-gold transition">Lihat Jadwal</a>
-                    <a href="#contact" class="bg-photo-gold text-white px-4 py-2 rounded hover:bg-opacity-90 transition">Kontak</a>
+            {% else %}
+                <div class="text-right">
+                <h5 class="text-sm font-medium text-photo-dark mb-2">
+                    Welcome back, {{ user.first_name|default:user.username }}!
+                </h5>
+                <a href="{% url 'authentication:dashboard' %}"
+                    class="inline-block bg-green-500 text-white font-semibold py-2 px-6 rounded-full shadow hover:bg-green-600 transition">
+                    <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                </a>
                 </div>
-                <div class="md:hidden flex items-center">
-                    <button class="mobile-menu-button">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
+            {% endif %}
             </div>
         </div>
+
+        <div class="md:hidden flex items-center">
+            <button class="mobile-menu-button">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            </button>
+        </div>
+        </div>
+    </div>
     </nav>
 
     <!-- Hero Section -->
@@ -82,7 +109,7 @@
                 <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-4">Portfolio</h2>
                 <p class="max-w-2xl mx-auto text-gray-300">Jelajahi karya terbaru saya di berbagai genre fotografi</p>
             </div>
-            
+
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div class="group relative overflow-hidden rounded-lg aspect-square">
                     <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Portrait photography" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
@@ -121,7 +148,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="text-center mt-8">
                 <a href="/myporto" class="inline-block border border-white text-white px-6 py-3 rounded hover:bg-white hover:text-photo-dark transition">View Full Portfolio</a>
             </div>
@@ -135,7 +162,7 @@
                 <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-6">Tentang Saya</h2>
                 <p class="text-lg mb-4">Berawal dari rasa ingin tahu yang besar terhadap dunia fotografi sejak tahun 2006, saya memulai perjalanan ini secara autodidak — belajar dari berbagai sumber dan aktif mengikuti seminar-seminar fotografi.</p>
                 <p class="mb-6 text-gray-600">Setelah enam tahun mendalami dan mengasah kemampuan, saya akhirnya memberanikan diri untuk mendirikan vendor fotografi sendiri pada tahun 2012. Sejak saat itu, saya terus berkomitmen untuk menangkap setiap momen berharga dengan sentuhan profesional dan penuh rasa.</p>
-                
+
                 <div class="grid grid-cols-2 gap-4 mb-8">
                     <div class="border-l-2 border-photo-gold pl-4">
                         <p class="font-bold text-2xl">500+</p>
@@ -154,7 +181,7 @@
                         <p class="text-gray-500">Exhibitions</p>
                     </div>
                 </div>
-                
+
                 <a href="#contact" class="bg-photo-gold text-white px-6 py-3 rounded hover:bg-opacity-90 transition">Get in Touch</a>
             </div>
             <div class="order-1 md:order-2">
@@ -172,7 +199,7 @@
                 <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-4">Services</h2>
                 <p class="max-w-2xl mx-auto text-gray-600">Layanan fotografi profesional yang disesuaikan dengan kebutuhan Anda</p>
             </div>
-            
+
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
                     <div class="w-16 h-16 bg-photo-gold/10 rounded-full flex items-center justify-center mb-6">
@@ -184,7 +211,7 @@
                     <p class="text-gray-600 mb-4">Sesi potret profesional untuk perorangan, pasangan, dan keluarga. Sempurna untuk pencitraan merek pribadi atau mengabadikan momen spesial.</p>
                     <p class="font-bold text-photo-gold">Dimulai dari Rp 1.000.000</p>
                 </div>
-                
+
                 <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
                     <div class="w-16 h-16 bg-photo-gold/10 rounded-full flex items-center justify-center mb-6">
                         <svg class="w-8 h-8 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -195,7 +222,7 @@
                     <p class="text-gray-600 mb-4">Paket fotografi pernikahan lengkap untuk mengabadikan hari istimewa Anda dari persiapan hingga resepsi.</p>
                     <p class="font-bold text-photo-gold">Dimulai dari Rp 2.000.000 tergantung paket</p>
                 </div>
-                
+
                 <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition">
                     <div class="w-16 h-16 bg-photo-gold/10 rounded-full flex items-center justify-center mb-6">
                         <svg class="w-8 h-8 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +242,7 @@
 
     <section class="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
-        
+
         <!-- Testimonial Trigger Button -->
         <div class="text-center mb-16">
             <button onclick="openTestimonialModal()" class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white px-8 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-800 transition-all duration-300 shadow-lg hover:shadow-xl mb-10">
@@ -337,12 +364,12 @@
                 document.getElementById('testimonialModal').classList.remove('hidden');
                 document.body.classList.add('overflow-hidden');
             }
-            
+
             function closeTestimonialModal() {
                 document.getElementById('testimonialModal').classList.add('hidden');
                 document.body.classList.remove('overflow-hidden');
             }
-            
+
             // Close modal when pressing Escape key
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Escape') {
@@ -359,7 +386,7 @@
             <div>
                 <h2 class="text-3xl md:text-4xl font-playfair font-bold mb-6">Get in Touch</h2>
                 <p class="mb-8 text-gray-600">Tertarik untuk bekerja sama? Isi formulir atau hubungi saya langsung menggunakan informasi di bawah ini.</p>
-                
+
                 <div class="space-y-4">
                     <div class="flex items-start">
                         <div class="w-10 h-10 bg-photo-gold/10 rounded-full flex items-center justify-center mr-4">
@@ -372,7 +399,7 @@
                             <p class="text-gray-600">+62 857-4005-0060</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start">
                         <div class="w-10 h-10 bg-photo-gold/10 rounded-full flex items-center justify-center mr-4">
                             <svg class="w-5 h-5 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -384,7 +411,7 @@
                             <p class="text-gray-600">noblestudio@gmail.com</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-start">
                         <div class="w-10 h-10 bg-photo-gold/10 rounded-full flex items-center justify-center mr-4">
                             <svg class="w-5 h-5 text-photo-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -398,7 +425,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mt-8">
                     <h4 class="font-bold mb-4">Follow Me</h4>
                     <div class="flex space-x-4">
@@ -421,7 +448,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <form   action="https://formspree.io/f/myzjyakl" method="POST" class="space-y-6">
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
@@ -457,7 +484,7 @@
                     <span class="text-xl font-bold font-playfair text-photo-gold">NobleStudio </span>
                     <p class="text-sm text-gray-400 mt-1">Capturing moments, creating memories.</p>
                 </div>
-                
+
                 <div class="text-sm text-gray-400">
                     <p>&copy; 2023 NobleStudio Photography. All rights reserved.</p>
                 </div>

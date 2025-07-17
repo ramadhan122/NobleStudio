@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - {{ user.first_name|default:user.username }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .sidebar-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-brand i {
+            margin-right: 10px;
+            color: #f39c12;
+        }
+
+        .sidebar.collapsed .brand-text {
+            display: none;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin: 20px 15px 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .sidebar.collapsed .nav-section {
+            display: none;
+        }
+
+        .nav-item {
+            margin: 5px 15px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 20px 20px;
+            margin: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toggle-sidebar {
+            background: none;
+            border: none;
+            color: #2c3e50;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .toggle-sidebar:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .content-area {
+            padding: 30px;
+        }
+
+        /* Stats Cards */
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin: 0 auto 15px;
+        }
+
+        .icon-blue { background: linear-gradient(45deg, #667eea, #764ba2); }
+        .icon-green { background: linear-gradient(45deg, #56CCF2, #2F80ED); }
+        .icon-orange { background: linear-gradient(45deg, #F093FB, #F5576C); }
+        .icon-purple { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .quick-action-btn {
+            border-radius: 12px;
+            padding: 15px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .activity-item {
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'index' %}" class="sidebar-brand">
+                <i class="fas fa-camera"></i>
+                <span class="brand-text">NobleStudio</span>
+            </a>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Main Navigation -->
+            <div class="nav-section">Main</div>
+            <div class="nav-item">
+                <a href="{% url 'authentication:dashboard' %}" class="nav-link active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{% url 'authentication:profile' %}" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span class="nav-text">Profile</span>
+                </a>
+            </div>
+
+            <!-- Booking Section -->
+            <div class="nav-section">Booking</div>
+            <div class="nav-item">
+                <a href="{% url 'booking' %}" class="nav-link">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span class="nav-text">New Booking</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{% url 'authentication:user_bookings' %}" class="nav-link">
+                    <i class="fas fa-history"></i>
+                    <span class="nav-text">My Bookings</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="{% url 'booking_calendar' %}" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="nav-text">Schedule</span>
+                </a>
+            </div>
+
+
+
+            {% if user.is_staff %}
+            <div class="nav-item">
+                <a href="/admin/" class="nav-link" target="_blank">
+                    <i class="fas fa-cog"></i>
+                    <span class="nav-text">Admin Panel</span>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Website -->
+            <div class="nav-section">Website</div>
+            <div class="nav-item">
+                <a href="{% url 'index' %}" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Homepage</span>
+                </a>
+            </div>
+            <!-- Logout -->
+            <div class="nav-item" style="margin-top: 30px;">
+                <a href="{% url 'authentication:logout' %}" class="nav-link text-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="nav-text">Logout</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="d-flex align-items-center">
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h4 class="ms-3 mb-0">Dashboard Overview</h4>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <!-- User Info -->
+                <div class="dropdown">
+                    <div class="user-avatar" data-bs-toggle="dropdown" role="button">
+                        {{ user.first_name.0|default:user.username.0|upper }}
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">{{ user.first_name|default:user.username }}</h6></li>
+                        <li><a class="dropdown-item" href="{% url 'authentication:profile' %}">
+                            <i class="fas fa-user me-2"></i>Profile
+                        </a></li>
+                        <li><a class="dropdown-item" href="{% url 'authentication:user_info' %}">
+                            <i class="fas fa-shield-alt me-2"></i>JWT Status
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'authentication:logout' %}">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Messages -->
+            {% if messages %}
+                <div class="row mb-4">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Welcome Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="content-card p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h2 class="mb-2">Welcome back, {{ user.first_name|default:user.username }}! 👋</h2>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-clock me-2"></i>
+                                    {{ current_time|date:"l, F d, Y - H:i" }}
+                                </p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <div class="text-center me-3">
+                                        <div class="user-avatar" style="width: 60px; height: 60px; font-size: 24px;">
+                                            {{ user.first_name.0|default:user.username.0|upper }}{{ user.last_name.0|upper|default:"" }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">{{ user.first_name }} {{ user.last_name }}</h6>
+                                        <small class="text-muted">{{ user.email }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon icon-blue">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3 class="fw-bold text-primary mb-1">{{ stats.total_bookings }}</h3>
+                        <p class="text-muted mb-0">Total Bookings</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon icon-green">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <h3 class="fw-bold text-success mb-1">{{ stats.days_member }}</h3>
+                        <p class="text-muted mb-0">Days Member</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon icon-orange">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h6 class="fw-bold text-warning mb-1">{{ stats.last_login }}</h6>
+                        <p class="text-muted mb-0">Last Login</p>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon icon-purple">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h6 class="fw-bold text-info mb-1">{{ stats.member_since }}</h6>
+                        <p class="text-muted mb-0">Member Since</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions & Profile Info -->
+            <div class="row g-4 mb-4">
+                <!-- Quick Actions -->
+                <div class="col-lg-8">
+                    <div class="content-card p-4">
+                        <h5 class="mb-4">
+                            <i class="fas fa-bolt me-2 text-primary"></i>Quick Actions
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="{% url 'booking' %}" class="btn btn-primary quick-action-btn w-100">
+                                    <i class="fas fa-calendar-plus me-2"></i>New Booking
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'photo_gallery' %}" class="btn btn-info quick-action-btn w-100">
+                                    <i class="fas fa-images me-2"></i>View Gallery
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'authentication:profile' %}" class="btn btn-success quick-action-btn w-100">
+                                    <i class="fas fa-user-edit me-2"></i>Edit Profile
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{% url 'authentication:user_bookings' %}" class="btn btn-warning quick-action-btn w-100">
+                                    <i class="fas fa-history me-2"></i>Booking History
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="col-lg-4">
+                    <div class="content-card p-4">
+                        <h5 class="mb-4">
+                            <i class="fas fa-user me-2 text-success"></i>Profile Info
+                        </h5>
+                        <div class="mb-3">
+                            <strong>Username:</strong><br>
+                            <span class="text-muted">{{ user.username }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email:</strong><br>
+                            <span class="text-muted">{{ user.email }}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Full Name:</strong><br>
+                            <span class="text-muted">{{ user.first_name }} {{ user.last_name }}</span>
+                        </div>
+                        <div class="mb-0">
+                            <strong>Status:</strong><br>
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle me-1"></i>Active
+                            </span>
+                            {% if user.is_staff %}
+                            <span class="badge bg-warning">
+                                <i class="fas fa-crown me-1"></i>Staff
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0">
+                                <i class="fas fa-clock me-2 text-warning"></i>Recent Bookings
+                            </h5>
+                            <a href="{% url 'authentication:user_bookings' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>View All
+                            </a>
+                        </div>
+
+                        {% if recent_bookings %}
+                            {% for booking in recent_bookings %}
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6 class="mb-1">{{ booking.name }}</h6>
+                                        <p class="text-muted small mb-1">
+                                            <i class="fas fa-calendar me-1"></i>{{ booking.date|date:"M d, Y" }}
+                                        </p>
+                                        <p class="text-muted small mb-0">
+                                            <i class="fas fa-envelope me-1"></i>{{ booking.email }}
+                                        </p>
+                                    </div>
+                                    <span class="badge bg-primary">Active</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                                <h6 class="text-muted mb-3">No bookings yet</h6>
+                                <p class="text-muted mb-4">Start by creating your first booking to see it here.</p>
+                                <a href="{% url 'booking' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Create First Booking
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sidebar Toggle
+        document.getElementById('toggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+
+            // Save state to localStorage
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+
+        // Restore sidebar state
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (sidebarCollapsed) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('mainContent').classList.add('expanded');
+            }
+        });
+
+        // Interactive effects
+        document.querySelectorAll('.stats-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Mobile sidebar toggle
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+
+        // Responsive behavior
+        if (window.innerWidth <= 768) {
+            document.getElementById('toggleSidebar').onclick = toggleMobileSidebar;
+        }
+
+        // Auto-refresh JWT status
+        setInterval(() => {
+            fetch('{% url "authentication:user_info" %}')
+                .then(response => response.json())
+                .then(data => console.log('JWT Status:', data))
+                .catch(error => console.log('JWT check failed:', error));
+        }, 300000);
+    </script>
+</body>
+</html>
