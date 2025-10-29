@@ -7,25 +7,37 @@ from booking.models import Booking
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse
 import json
+from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib import messages
 
 # Create your views here.
 def index(request):
+    # === Bagian Notifikasi Booking Approved ===
+    user_email = request.user.email if request.user.is_authenticated else None
+
+    approved_bookings = []
+    if user_email:
+        approved_bookings = Booking.objects.filter(
+            email=user_email, approved='approved'
+        ).order_by('-date')
+
+    # === Bagian Testimonial ===
     testimonials = Testimonial.objects.order_by('-created_at')[:3]
 
     if request.method == 'POST':
         form = TestimonialForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('index')  # refresh page
+            return redirect('index')
     else:
         form = TestimonialForm()
 
     return render(request, 'index.html', {
+        'approved_bookings': approved_bookings,
         'testimonials': testimonials,
         'form': form
-        })
+    })
 
 def about(request):
     return render(request,'about.html')
@@ -75,3 +87,8 @@ def booking_calendar(request):
         'events': json.dumps(events)
     }
     return render(request, 'schedule.html', context)
+
+def home(request):
+    testimonials = Testimonial.objects.all()
+    return render(request, "index.html", {"testimonials": testimonials})
+

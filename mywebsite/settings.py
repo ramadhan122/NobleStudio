@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from django.contrib.auth import authenticate, login
+
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -40,16 +43,26 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'portfolio',  # Your portfolio app
-    'booking'
+    'booking', 
+    "django.contrib.sites",   # wajib
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    'accounts',
 
 ]
+
+SITE_ID = 1
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    "django.contrib.auth.middleware.AuthenticationMiddleware",  # <--- ini dulu
+    "allauth.account.middleware.AccountMiddleware",
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -120,7 +133,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -129,4 +145,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Login pakai email, bukan username
+ACCOUNT_LOGIN_METHODS = {"email"}   # login only via email
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+# remove settings ACCOUNT_AUTHENTICATION_METHOD, ACCOUNT_EMAIL_REQUIRED, ACCOUNT_USERNAME_REQUIRED
+ACCOUNT_EMAIL_VERIFICATION = "optional"  # bisa diganti 'mandatory' jika perlu
+SOCIALACCOUNT_QUERY_EMAIL = True  # pastikan Allauth menyimpan email
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+# Wajib
+# Cara login (pakai email, tidak pakai username)
+
+
+LOGIN_URL = "/login/"
+
+LOGIN_REDIRECT_URL = "/"   # atau halaman index kamu
+LOGOUT_REDIRECT_URL = ""
 

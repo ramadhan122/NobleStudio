@@ -1,5 +1,12 @@
 from django.db import models
 
+class Customer(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.name
+    
 class Booking(models.Model):
     SERVICE_CHOICES = [
         ('wedding', 'Wedding'),
@@ -22,7 +29,16 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     submitted_at = models.DateTimeField(auto_now=True)
     approved = models.CharField(max_length=30, choices=CONFIRM, default='not approved')
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
   # Field to indicate if the booking is approved
 
     def __str__(self):
         return f"{self.name} - {self.service} on {self.date}"
+
+class CustomerCluster(models.Model):
+    user_identifier = models.CharField(max_length=255, default="unknown")  # bisa simpan email atau username
+    cluster = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.user_identifier} - Cluster {self.cluster}"
+

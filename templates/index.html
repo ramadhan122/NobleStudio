@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NobleStudio- Photography Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" href="{% static 'images/log.png' %}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -27,30 +30,132 @@
 </head>
 <body class="bg-photo-light font-raleway text-photo-dark">
     <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md fixed w-full z-10 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-xl font-bold font-playfair text-photo-gold">NobleStudio</span>
-                </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-photo-dark hover:text-photo-gold transition">Beranda</a>
-                    <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition">Portfolio</a>
-                    <a href="#about" class="text-photo-dark hover:text-photo-gold transition">Tentang Saya</a>
-                    <a href="#services" class="text-photo-dark hover:text-photo-gold transition">Layanan</a>
-                    <a href="schedule" class="text-photo-dark hover:text-photo-gold transition">Lihat Jadwal</a>
-                    <a href="#contact" class="bg-photo-gold text-white px-4 py-2 rounded hover:bg-opacity-90 transition">Kontak</a>
-                </div>
-                <div class="md:hidden flex items-center">
-                    <button class="mobile-menu-button">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
-                </div>
+<nav class="bg-white/80 backdrop-blur-md fixed w-full z-10 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+
+            <!-- Logo / Greeting -->
+            <div class="flex flex-col">
+                {% if user.is_authenticated %}
+                    <h3 class="text-xl font-semibold text-gray-800">
+                        Halo, <span class="text-photo-gold">{{ user.first_name }} {{ user.last_name }}</span> 
+                    </h3>
+                    <p class="text-gray-500 text-sm">{{ user.email }}</p>
+                {% else %}
+                    <p class="text-gray-800">
+                        Selamat datang di <span class="font-bold text-photo-gold">NobleStudio</span>
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Menu (Desktop) -->
+            <div class="hidden md:flex items-center space-x-6 ml-auto">
+                <a href="/" class="text-photo-dark hover:text-photo-gold transition">Beranda</a>
+                <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition">Portfolio</a>
+                <a href="#about" class="text-photo-dark hover:text-photo-gold transition">Tentang Saya</a>
+                <a href="#services" class="text-photo-dark hover:text-photo-gold transition">Layanan</a>
+                <a href="schedule" class="text-photo-dark hover:text-photo-gold transition">Lihat Jadwal</a>
+                <a href="#contact" class="bg-photo-gold text-white px-4 py-2 rounded hover:bg-opacity-90 transition">
+                    Kontak
+                </a>
+
+            <!-- 🔔 Ikon Notifikasi -->
+            <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+            <button id="notifBtn" style="background:none; border:none; cursor:pointer; position:relative;">
+                <span style="font-size: 24px;  filter: grayscale(100%);">🔔</span>
+                {% if approved_bookings %}
+                <span style="position:absolute; top:0; right:0; background:red; color:white; border-radius:50%; font-size:10px; padding:2px 5px;">
+                    {{ approved_bookings|length }}
+                </span>
+                {% endif %}
+            </button>
+
+            <!-- Popup -->
+            <div id="notifPopup" style="
+                display: none;
+                position: absolute;
+                right: 0;
+                top: 35px;
+                width: 300px;
+                background: white;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                padding: 10px;
+            ">
+                <h4>Jadwal Yang Telah Disetujui</h4>
+                <hr>
+                <br>
+                {% if approved_bookings %}
+                <ul style="list-style:none; padding:0; margin:0;">
+                    {% for booking in approved_bookings %}
+                    <li style="margin-bottom:10px;">
+                        <strong>{{ booking.service|title }}</strong><br>
+                        {{ booking.date }} - {{ booking.time }}<br>
+                        <small>Status: ✅ {{ booking.approved }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>Tidak ada notifikasi saat ini.</p>
+                {% endif %}
+            </div>
+            </div>
+
+
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'account_logout' %}" 
+                       class="text-black bg-transparent hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg transition">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" 
+                          class="text-black bg-transparent hover:bg-black hover:text-white px-4 py-2 rounded-lg transition">
+                        Login
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden flex items-center">
+                <button id="mobileMenuButton" class="mobile-menu-button">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+            <div class="px-4 py-3 space-y-3">
+                <a href="/" class="block text-photo-dark hover:text-photo-gold transition py-2">Beranda</a>
+                <a href="#portfolio" class="block text-photo-dark hover:text-photo-gold transition py-2">Portfolio</a>
+                <a href="#about" class="block text-photo-dark hover:text-photo-gold transition py-2">Tentang Saya</a>
+                <a href="#services" class="block text-photo-dark hover:text-photo-gold transition py-2">Layanan</a>
+                <a href="schedule" class="block text-photo-dark hover:text-photo-gold transition py-2">Lihat Jadwal</a>
+                <a href="#contact" class="block bg-photo-gold text-white px-4 py-2 rounded hover:bg-opacity-90 transition text-center">
+                    Kontak
+                </a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'account_logout' %}" 
+                       class="block text-black bg-transparent hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg transition text-center border border-red-600">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="/login/" 
+                          class="block text-black bg-transparent hover:bg-black hover:text-white px-4 py-2 rounded-lg transition text-center border border-black">
+                        Login
+                    </a>
+                {% endif %}
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Hero Section -->
     <section id="home" class="pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -60,13 +165,28 @@
                 <p class="text-lg mb-8 text-gray-600">Layanan fotografi profesional yang mengkhususkan diri dalam potret, pernikahan, dan pekerjaan komersial. Berkantor pusat di Kudus.</p>
                 <div class="flex space-x-4">
                     <a href="#portfolio" class="bg-photo-gold text-white px-6 py-3 rounded hover:bg-opacity-90 transition">Tampilkan Portfolio</a>
-                    <a href="booking" class="border border-photo-dark text-photo-dark px-6 py-3 rounded hover:bg-photo-dark hover:text-white transition">Jadwalkan Sesi</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'booking' %}" 
+                    class="px-6 py-3 rounded-lg border border-photo-dark text-photo-dark hover:bg-photo-dark hover:text-white">
+                        Jadwalkan Sesi
+                    </a>
+                {% else %}
+                    <button onclick="loginWarning()"
+                        class="px-6 py-3 rounded-lg border border-photo-dark text-photo-dark hover:bg-photo-dark hover:text-white">
+                        Jadwalkan Sesi
+                    </button>
+                {% endif %}
+
                 </div>
             </div>
             <div class="relative">
                 <div class="relative aspect-square overflow-hidden rounded-lg shadow-xl">
-                    <iframe src='https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80' frameborder='0' width='100%' height='100%'></iframe>
+                    <img 
+                        src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
+                        alt="Unsplash photo" 
+                        class="w-full h-full object-cover">
                 </div>
+
                 <div class="absolute -bottom-6 -right-6 bg-white p-4 shadow-lg rounded-lg hidden md:block">
                     <p class="font-bold text-photo-gold">5+ Tahun Pengalaman</p>
                     <p class="text-sm text-gray-500">Fotografi Profesional</p>
@@ -466,24 +586,55 @@
     </footer>
 
     <script>
-        // Simple mobile menu toggle
-        const mobileMenuButton = document.querySelector('.mobile-menu-button');
-        const mobileMenu = document.createElement('div');
-        mobileMenu.className = 'md:hidden hidden bg-white w-full absolute left-0 px-4 py-2 shadow-lg';
-        mobileMenu.innerHTML = `
-            <div class="flex flex-col space-y-2 py-2">
-                <a href="#home" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">Home</a>
-                <a href="#portfolio" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">Portfolio</a>
-                <a href="#about" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">About</a>
-                <a href="#services" class="text-photo-dark hover:text-photo-gold transition px-2 py-1">Services</a>
-                <a href="#contact" class="text-photo-gold px-2 py-1">Contact</a>
-            </div>
-        `;
-        document.body.appendChild(mobileMenu);
+        function loginWarning() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Login Diperlukan',
+                text: 'Silakan login terlebih dahulu untuk menjadwalkan sesi.',
+                confirmButtonText: 'Login Sekarang',
+                confirmButtonColor: '#d4af37'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{% url "login" %}?next={% url "index" %}';
+                }
+            });
+        }
+
+        const notifBtn = document.getElementById('notifBtn');
+        const notifPopup = document.getElementById('notifPopup');
+            
+        notifBtn.addEventListener('click', () => {
+            notifPopup.style.display = notifPopup.style.display === 'block' ? 'none' : 'block';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!notifBtn.contains(e.target) && !notifPopup.contains(e.target)) {
+            notifPopup.style.display = 'none';
+            }
+        });
+        // Mobile menu functionality
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
 
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
+
+        // Close mobile menu when clicking on a link
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+            
     </script>
 </body>
 </html>

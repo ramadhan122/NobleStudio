@@ -35,25 +35,7 @@
 
     <!-- Main Content -->
     <div class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        <!-- Success Messages -->
-        {% if messages %}
-        <div class="mb-8 space-y-4">
-            {% for message in messages %}
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm text-green-700">{{ message }}</p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        
 
         <!-- Booking Card -->
         <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -105,7 +87,20 @@
                                     {{ field.label }}
                                     {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
                                 </label>
-                                {{ field }}
+
+                                {% if field.name == "email" %}
+                                    <!-- Auto isi email dari Google -->
+                                    <input type="email" 
+                                        name="email" 
+                                        id="{{ field.id_for_label }}"
+                                        value="{{ request.user.email }}" 
+                                        class="w-full p-3 border rounded bg-white text-gray-900 font-semibold"
+                                        readonly>
+
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+
                                 {% if field.help_text %}
                                 <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
                                 {% endif %}
@@ -114,6 +109,7 @@
                                 {% endfor %}
                             </div>
                             {% endfor %}
+
                         </div>
 
                         <div class="pt-4">
@@ -149,6 +145,7 @@
             min-height: 120px;
             resize: vertical;
         }
+        
     </style>
 </body>
 </html>     
