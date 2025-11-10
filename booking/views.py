@@ -127,8 +127,6 @@ def train_from_csv(request=None):
 
 # === 2️⃣ PREDIKSI CUSTOMER DARI BOOKING ===
 def run_customer_clustering(request):
-
-
     start_time = time.time()
     model_path = "media/trained_model.pkl"
 
@@ -146,56 +144,63 @@ def run_customer_clustering(request):
     if not bookings.exists():
         return render(request, "clustering_result.html", {"message": "Tidak ada data booking."})
 
-    # Buat DataFrame
+    # Buat DataFrame dari data booking
     df = pd.DataFrame(list(bookings.values('email', 'submitted_at', 'price')))
     df['price'] = df['price'].fillna(0).astype(float)
 
-    # Pastikan datetime
+    # Pastikan kolom tanggal valid
     df['submitted_at'] = pd.to_datetime(df['submitted_at'], errors='coerce')
 
-    # Hitung hari sekarang lokal (tz-naive)
+    # Hitung hari sekarang
     today = datetime.now().date()
 
     # Hitung RFM
     def recency_days(x):
-        last_submit = x.max().date()  # ambil tanggal submit terakhir
+        last_submit = x.max().date()
         delta = (today - last_submit).days
-        return max(delta, 0)  # minimal 0
+        return max(delta, 0)
 
     df_grouped = df.groupby('email').agg({
-        'submitted_at': recency_days,
-        'email': 'count',
-        'price': 'sum'
+        'submitted_at': recency_days,  # Recency = hari sejak transaksi terakhir
+        'email': 'count',              # Frequency = jumlah transaksi
+        'price': 'sum'                 # Monetary = total pengeluaran
     }).rename(columns={
         'submitted_at': 'Recency',
         'email': 'Frequency',
         'price': 'Monetary'
     }).reset_index()
 
-    # Prediksi awal pakai model Decision Tree
+    # Prediksi awal dengan model Decision Tree
     X_new = df_grouped[['Recency', 'Frequency', 'Monetary']]
     y_pred = model.predict(X_new)
 
     # Mapping label numerik ke nama
     label_map = {0: "Standar", 1: "Menengah", 2: "Loyal"}
 
-    # Rule-based correction
+    # === Rule-based correction (berdasarkan semua aspek RFM) ===
     corrected_labels = []
     for i, row in df_grouped.iterrows():
         label = label_map[int(y_pred[i])]
-        if label == "Standar":
-            if 5000000 <= row["Monetary"] < 10000000:
-                label = "Menengah"
-            elif row["Monetary"] >= 10000000:
-                label = "Loyal"
-        elif label == "Menengah" and row["Monetary"] >= 10000000:
+
+        # Aturan manual tambahan
+        if row["Recency"] <= 7 and row["Frequency"] >= 3 and row["Monetary"] >= 10000000:
             label = "Loyal"
+        elif row["Recency"] <= 15 and row["Frequency"] >= 2 and row["Monetary"] >= 5000000:
+            label = "Menengah"
+        elif row["Recency"] > 20 or row["Frequency"] == 1 or row["Monetary"] < 5000000:
+            label = "Standar"
+
         corrected_labels.append(label)
 
-    # Simpan ke database
+    # Hapus cluster lama
     CustomerCluster.objects.all().delete()
+
+    # Simpan hasil cluster baru
     for i, row in df_grouped.iterrows():
-        label_num = list(label_map.keys())[list(label_map.values()).index(corrected_labels[i])]
+        label_str = corrected_labels[i]
+        # Cari nomor label dari nama
+        label_num = next((k for k, v in label_map.items() if v == label_str), 0)  # fallback ke 0 (Standar)
+
         CustomerCluster.objects.create(
             user_identifier=row['email'],
             cluster=label_num
@@ -214,11 +219,10 @@ def run_customer_clustering(request):
         })
 
     processing_time = round(time.time() - start_time, 2)
+
     return render(request, "clustering_result.html", {
-        "message": "✅ Klasifikasi pelanggan berhasil dijalankan menggunakan model prediksi dan aturan bisnis.",
+        "message": "✅ Klasifikasi pelanggan berhasil dijalankan dengan model dan aturan berbasis RFM.",
         "clusters": clusters,
         "accuracy": "-",
         "processing_time": processing_time,
     })
-
-

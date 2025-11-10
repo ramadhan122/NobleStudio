@@ -1,0 +1,20 @@
+# Folder Python cache
+__pycache__/
+*.pyc
+
+# File database lokal Django
+db.sqlite3
+
+# Folder media dan file model
+/media/
+/static/
+/*.pkl
+*.csv
+
+# Environment virtual
+venv/
+.env/
+
+# File sistem OS
+.DS_Store
+Thumbs.db
