@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript"
+        src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="Mid-client-uFhPWklnw4xZIdNs"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-5">
+    <div class="bg-white rounded-lg shadow-md max-w-2xl w-full overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gray-800 text-white px-8 py-8 border-b-4 border-gray-700">
+            <h1 class="text-2xl font-semibold mb-1">Detail Booking</h1>
+            <p class="text-sm opacity-90 mt-1">Informasi Pemesanan Anda</p>
+            {% if already_paid %}
+                <div class="inline-block bg-green-600 text-white px-4 py-2 rounded mt-4 text-sm font-medium">
+                    ✓ Sudah Dibayar
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Content -->
+        <div class="p-8">
+            <!-- Info Card -->
+            <div class="bg-gray-50 border border-gray-200 rounded-md mb-5">
+                <div class="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                    <span class="text-gray-600 text-sm font-medium">Nama</span>
+                    <span class="text-gray-900 text-sm font-semibold">{{ request.user.username }}</span>
+                </div>
+                <div class="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                    <span class="text-gray-600 text-sm font-medium">Email</span>
+                    <span class="text-gray-900 text-sm font-semibold text-right">{{ booking.email }}</span>
+                </div>
+                <div class="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                    <span class="text-gray-600 text-sm font-medium">Telepon</span>
+                    <span class="text-gray-900 text-sm font-semibold">{{ booking.phone }}</span>
+                </div>
+                <div class="flex justify-between items-center px-5 py-4 border-b border-gray-200">
+                    <span class="text-gray-600 text-sm font-medium">Tanggal Acara</span>
+                    <span class="text-gray-900 text-sm font-semibold">{{ booking.date }}</span>
+                </div>
+                <div class="flex justify-between items-center px-5 py-4">
+                    <span class="text-gray-600 text-sm font-medium">Total Tagihan</span>
+                    <span class="text-gray-800 text-xl font-semibold">Rp {{ booking.price|floatformat:0 }}</span>
+                </div>
+            </div>
+            
+            {% if already_paid %}
+                <p class="text-center text-gray-600 mt-4 text-sm">
+                    Transaksi ini telah selesai dan tidak dapat dibayar ulang.
+                </p>
+            {% else %}
+                <button id="pay-button" class="bg-gray-800 hover:bg-gray-700 active:bg-gray-900 text-white font-semibold py-3.5 px-7 rounded-md w-full transition-colors text-base">
+                    Bayar Sekarang
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        const payButton = document.getElementById('pay-button');
+        if (payButton) {
+            payButton.addEventListener('click', function () {
+                snap.pay('{{ snap_token }}', {
+                    onSuccess: function (result) {
+                        alert('Pembayaran berhasil! Terima kasih.');
+                        console.log(result);
+                        window.location.reload();
+                    },
+                    onPending: function (result) {
+                        alert('Menunggu pembayaran Anda...');
+                        console.log(result);
+                    },
+                    onError: function (result) {
+                        alert('Terjadi kesalahan saat memproses pembayaran.');
+                        console.log(result);
+                    },
+                    onClose: function () {
+                        alert('Popup pembayaran ditutup. Silakan coba lagi jika ingin melanjutkan pembayaran.');
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
