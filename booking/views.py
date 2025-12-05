@@ -217,7 +217,7 @@ def booking_detail(request, booking_id):
     # Inisialisasi Midtrans
     snap = midtransclient.Snap(
         is_production=False,  # ubah ke True jika sudah live
-        server_key=''  # ganti dengan server key kamu
+        server_key='Mid-server-LWpZPL5K-D8C1zPFZbcuRxSf'  # ganti dengan server key kamu
     )
 
     if booking.payment_status == "paid":
@@ -254,7 +254,7 @@ def mark_paid(request, booking_id):
 
     # Tutup transaksi di Midtrans (supaya token tidak bisa dipakai ulang)
     order_id = f"BOOK-{booking.id}-{int(time.time())}"
-    server_key = ''
+    server_key = 'Mid-server-LWpZPL5K-D8C1zPFZbcuRxSf'
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
