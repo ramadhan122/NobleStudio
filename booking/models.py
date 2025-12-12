@@ -42,6 +42,9 @@ class Booking(models.Model):
         default="unpaid",
     )
 
+    # 🟦 ORDER ID MIDTRANS → disimpan supaya bisa dicek ulang
+    order_id = models.CharField(max_length=100, null=True, blank=True)
+
     def __str__(self):
         return f"{self.name} - {self.service} ({self.date}) - {self.payment_status}"
 

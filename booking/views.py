@@ -1,3 +1,4 @@
+import base64
 from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -64,33 +65,60 @@ def train_from_csv(request=None):
     # Pastikan folder media ada
     os.makedirs("media", exist_ok=True)
 
-    # Jika CSV tidak ada, buat dataset 100 record + noise otomatis
+    # Fungsi untuk penentuan label berdasarkan RFM Score
+    def rfm_label(recency, frequency, monetary):
+
+        # Score Recency
+        if recency <= 5: r = 5
+        elif recency <= 10: r = 4
+        elif recency <= 15: r = 3
+        elif recency <= 20: r = 2
+        else: r = 1
+
+        # Score Frequency
+        if frequency >= 5: f = 5
+        elif frequency == 4: f = 4
+        elif frequency == 3: f = 3
+        elif frequency == 2: f = 2
+        else: f = 1
+
+        # Score Monetary
+        if monetary >= 12_000_000: m = 5
+        elif monetary >= 9_000_000: m = 4
+        elif monetary >= 6_000_000: m = 3
+        elif monetary >= 3_000_000: m = 2
+        else: m = 1
+
+        total = r + f + m
+
+        # Labeling berdasarkan total skor
+        if total >= 12:
+            return 2  # Loyal
+        elif total >= 8:
+            return 1  # Menengah
+        else:
+            return 0  # Standar
+
+    # Jika CSV tidak ada, generate dataset + noise
     if not os.path.exists(csv_path):
         np.random.seed(42)
         n = 100
         recency = np.random.randint(0, 31, size=n)
         frequency = np.random.randint(1, 6, size=n)
         monetary = np.random.randint(2_000_000, 15_000_001, size=n)
-        labels = []
-        for r, f, m in zip(recency, frequency, monetary):
-            if m >= 10_000_000:
-                label = 2  # Loyal
-            elif m >= 5_000_000:
-                label = 1  # Menengah
-            else:
-                label = 0  # Standar
-            labels.append(label)
-        labels = np.array(labels)
 
-        # Tambahkan noise: 10% record label acak berbeda
-        num_noise = int(0.1 * n)
+        # Penentuan label menggunakan fungsi RFM baru
+        labels = np.array([rfm_label(r, f, m) for r, f, m in zip(recency, frequency, monetary)])
+
+        # Tambahkan noise: 10% label acak
+        num_noise = int(0.2 * n)
         noise_indices = np.random.choice(n, num_noise, replace=False)
         for idx in noise_indices:
             possible = [0, 1, 2]
             possible.remove(labels[idx])
             labels[idx] = np.random.choice(possible)
 
-        # Buat DataFrame dan simpan CSV
+        # Simpan CSV
         df = pd.DataFrame({
             "Recency": recency,
             "Frequency": frequency,
@@ -123,11 +151,12 @@ def train_from_csv(request=None):
     processing_time = round(time.time() - start_time, 2)
 
     return render(request, "clustering_result.html", {
-        "message": f"✅ Model berhasil dilatih dari CSV dengan akurasi test {accuracy}%.",
+        "message": f"✅ Model berhasil dilatih dari CSV berdasarkan RFM dengan akurasi {accuracy}%.",
         "accuracy": accuracy,
         "processing_time": processing_time,
         "clusters": []
     })
+
 
 
 def run_customer_clustering(request):
@@ -211,26 +240,56 @@ def run_customer_clustering(request):
         "processing_time": processing_time,
     })
 
+def check_midtrans_payment_status(order_id, server_key):
+    url = f"https://api.sandbox.midtrans.com/v2/{order_id}/status"
+    headers = {
+        "accept": "application/json",
+        "authorization": "Basic " + base64.b64encode(f"{server_key}:".encode()).decode(),
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            return response.json().get("transaction_status", None)
+    except:
+        return None
+
+    return None
+
+
+# ============================
+#       BOOKING DETAIL
+# ============================
 def booking_detail(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
+    server_key = "Mid-server-LWpZPL5K-D8C1zPFZbcuRxSf"
 
-    # Inisialisasi Midtrans
     snap = midtransclient.Snap(
-        is_production=False,  # ubah ke True jika sudah live
-        server_key='Mid-server-LWpZPL5K-D8C1zPFZbcuRxSf'  # ganti dengan server key kamu
+        is_production=False,
+        server_key=server_key
     )
 
-    if booking.payment_status == "paid":
-        return render(request, "details.html", {
-            "booking": booking,
-            "snap_token": None,
-            "already_paid": True,
-        })
+    # Jika booking sudah punya order_id, cek ke Midtrans dulu
+    if booking.order_id:
+        status = check_midtrans_payment_status(booking.order_id, server_key)
 
-    # Data transaksi
+        if status in ["settlement", "capture", "success"]:
+            booking.payment_status = "paid"
+            booking.save()
+            return render(request, "details.html", {
+                "booking": booking,
+                "snap_token": None,
+                "already_paid": True,
+            })
+
+    # Jika belum punya order_id → generate sekali saja
+    if not booking.order_id:
+        booking.order_id = f"BOOK-{booking.id}-{int(time.time())}"
+        booking.save()
+
     transaction = {
         "transaction_details": {
-            "order_id": f"BOOK-{booking.id}-{int(time.time())}",
+            "order_id": booking.order_id,
             "gross_amount": int(booking.price),
         },
         "customer_details": {
@@ -247,14 +306,36 @@ def booking_detail(request, booking_id):
         "snap_token": snap_token
     })
 
+
+# ============================
+#         MARK PAID
+# ============================
 def mark_paid(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
+
+    server_key = "Mid-server-LWpZPL5K-D8C1zPFZbcuRxSf"
+
+    # ⛔ WAJIB! Jangan pakai BOOK-{id}, pakai order_id yang tersimpan
+    if not booking.order_id:
+        return JsonResponse({
+            "status": "failed",
+            "message": "Order ID tidak ditemukan."
+        })
+
+    # 🔍 cek status midtrans pakai order_id sebenarnya
+    status = check_midtrans_payment_status(booking.order_id, server_key)
+
+    if status not in ["settlement", "capture", "success"]:
+        return JsonResponse({
+            "status": "failed",
+            "message": "Pembayaran belum diterima Midtrans."
+        })
+
+    # update status pembayaran
     booking.payment_status = "paid"
     booking.save()
 
-    # Tutup transaksi di Midtrans (supaya token tidak bisa dipakai ulang)
-    order_id = f"BOOK-{booking.id}-{int(time.time())}"
-    server_key = 'Mid-server-LWpZPL5K-D8C1zPFZbcuRxSf'
+    # expire transaksi supaya token tidak bisa dipakai ulang
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
@@ -262,8 +343,11 @@ def mark_paid(request, booking_id):
     }
 
     try:
-        requests.post(f"https://api.sandbox.midtrans.com/v2/{order_id}/expire", headers=headers)
+        requests.post(
+            f"https://api.sandbox.midtrans.com/v2/{booking.order_id}/expire",
+            headers=headers
+        )
     except Exception as e:
-        print("❌ Gagal meng-expire transaksi di Midtrans:", e)
+        print("❌ Gagal meng-expire transaksi:", e)
 
     return JsonResponse({"status": "success"})
