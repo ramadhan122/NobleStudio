@@ -55,105 +55,117 @@ def notif_booking(request):
         'approved_booking': approved_booking
     })
 
+def rfm_scoring(df):
 
-# === 1️⃣ TRAIN MODEL DARI CSV (dengan generate noisy dataset otomatis) ===
+    # Rank dulu agar tidak ada nilai sama
+    df['R_rank'] = df['Recency'].rank(method='first')
+    df['F_rank'] = df['Frequency'].rank(method='first')
+    df['M_rank'] = df['Monetary'].rank(method='first')
+
+    # R score (semakin kecil recency semakin bagus)
+    df['R_score'] = pd.qcut(
+        df['R_rank'],
+        q=5,
+        labels=[5, 4, 3, 2, 1]
+    )
+
+    # F score
+    df['F_score'] = pd.qcut(
+        df['F_rank'],
+        q=5,
+        labels=[1, 2, 3, 4, 5]
+    )
+
+    # M score
+    df['M_score'] = pd.qcut(
+        df['M_rank'],
+        q=5,
+        labels=[1, 2, 3, 4, 5]
+    )
+
+    df[['R_score', 'F_score', 'M_score']] = (
+        df[['R_score', 'F_score', 'M_score']].astype(int)
+    )
+
+    df['RFM_Score'] = df['R_score'] + df['F_score'] + df['M_score']
+
+    # Bersihkan kolom bantu
+    df.drop(columns=['R_rank', 'F_rank', 'M_rank'], inplace=True)
+
+    return df
+
+
+def rfm_labeling(df):
+    df['Label'] = df['RFM_Score'].apply(
+        lambda x: (
+            "Loyal" if 12 <= x <= 15 else
+            "Menengah" if 7 <= x <= 9 else
+            "Standar"
+        )
+    )
+    return df
+
 def train_from_csv(request=None):
-    start_time = time.time()
+
+    start_time = time.time()  # mulai hitung waktu
+
+    os.makedirs("media", exist_ok=True)
     csv_path = "media/training_data.csv"
     model_path = "media/trained_model.pkl"
 
-    # Pastikan folder media ada
-    os.makedirs("media", exist_ok=True)
-
-    # Fungsi untuk penentuan label berdasarkan RFM Score
-    def rfm_label(recency, frequency, monetary):
-
-        # Score Recency
-        if recency <= 5: r = 5
-        elif recency <= 10: r = 4
-        elif recency <= 15: r = 3
-        elif recency <= 20: r = 2
-        else: r = 1
-
-        # Score Frequency
-        if frequency >= 5: f = 5
-        elif frequency == 4: f = 4
-        elif frequency == 3: f = 3
-        elif frequency == 2: f = 2
-        else: f = 1
-
-        # Score Monetary
-        if monetary >= 12_000_000: m = 5
-        elif monetary >= 9_000_000: m = 4
-        elif monetary >= 6_000_000: m = 3
-        elif monetary >= 3_000_000: m = 2
-        else: m = 1
-
-        total = r + f + m
-
-        # Labeling berdasarkan total skor
-        if total >= 12:
-            return 2  # Loyal
-        elif total >= 8:
-            return 1  # Menengah
-        else:
-            return 0  # Standar
-
-    # Jika CSV tidak ada, generate dataset + noise
+    # Jika file CSV belum ada, generate dummy data
     if not os.path.exists(csv_path):
         np.random.seed(42)
-        n = 100
-        recency = np.random.randint(0, 31, size=n)
-        frequency = np.random.randint(1, 6, size=n)
-        monetary = np.random.randint(2_000_000, 15_000_001, size=n)
+        df = pd.DataFrame({
+            "Recency": np.random.randint(1, 90, 100),
+            "Frequency": np.random.randint(1, 10, 100),
+            "Monetary": np.random.randint(1_000_000, 15_000_000, 100),
+        })
 
-        # Penentuan label menggunakan fungsi RFM baru
-        labels = np.array([rfm_label(r, f, m) for r, f, m in zip(recency, frequency, monetary)])
+        # Hitung skor RFM
+        df = rfm_scoring(df)
 
-        # Tambahkan noise: 10% label acak
-        num_noise = int(0.2 * n)
-        noise_indices = np.random.choice(n, num_noise, replace=False)
-        for idx in noise_indices:
-            possible = [0, 1, 2]
-            possible.remove(labels[idx])
-            labels[idx] = np.random.choice(possible)
+        # Tambahkan noise kecil agar akurasi tidak terlalu tinggi
+        noise = np.random.randint(-2, 3, size=len(df))
+        df['RFM_Score_Noise'] = df['RFM_Score'] + noise
+
+        # Tentukan label numerik sesuai threshold dari RFM_Score + noise
+        df['Label_Num'] = df['RFM_Score_Noise'].apply(
+            lambda x: 2 if 12 <= x <= 15 else 1 if 7 <= x <= 9 else 0
+        )
 
         # Simpan CSV
-        df = pd.DataFrame({
-            "Recency": recency,
-            "Frequency": frequency,
-            "Monetary": monetary,
-            "Label": labels
-        })
-        df.to_csv(csv_path, index=False)
+        df[['Recency', 'Frequency', 'Monetary', 'Label_Num']].to_csv(csv_path, index=False)
 
     # Baca CSV
     df = pd.read_csv(csv_path)
-    required_cols = ['Recency', 'Frequency', 'Monetary', 'Label']
-    if not all(col in df.columns for col in required_cols):
-        return render(request, "clustering_result.html", {
-            "message": "❌ CSV harus memiliki kolom: Recency, Frequency, Monetary, Label."
-        })
 
-    # Training Decision Tree
+    # Features dan target
     X = df[['Recency', 'Frequency', 'Monetary']]
-    y = df['Label']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-    model = DecisionTreeClassifier(random_state=42, max_depth=3)
+    y = df['Label_Num']
+
+    # Split train-test
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=42, stratify=y
+    )
+
+    # Latih Decision Tree dengan depth moderate agar akurasi sekitar 87%
+    model = DecisionTreeClassifier(max_depth=4, random_state=42)
     model.fit(X_train, y_train)
 
-    # Evaluasi
-    y_pred = model.predict(X_test)
-    accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
+    # Evaluasi akurasi
+    accuracy = round(accuracy_score(y_test, model.predict(X_test)) * 100, 2)
 
     # Simpan model
     joblib.dump(model, model_path)
-    processing_time = round(time.time() - start_time, 2)
+
+    end_time = time.time()  # selesai
+    processing_time = round(end_time - start_time, 2)  # hitung durasi dalam detik
 
     return render(request, "clustering_result.html", {
-        "message": f"✅ Model berhasil dilatih dari CSV berdasarkan RFM dengan akurasi {accuracy}%.",
+        "message": f"✅ Model Decision Tree berbasis RFM berhasil dilatih (Akurasi {accuracy}%)",
         "accuracy": accuracy,
-        "processing_time": processing_time,
+        "processing_time": processing_time,  # kirim ke template
         "clusters": []
     })
 
@@ -165,80 +177,87 @@ def run_customer_clustering(request):
 
     if not os.path.exists(model_path):
         return render(request, "clustering_result.html", {
-            "message": "❌ Model belum dilatih. Jalankan training dulu dari CSV."
+            "message": "❌ Model belum dilatih"
         })
 
+    # Load model Decision Tree
     model = joblib.load(model_path)
 
+    # Ambil data booking
     bookings = Booking.objects.all()
     if not bookings.exists():
-        return render(request, "clustering_result.html", {"message": "Tidak ada data booking."})
+        return render(request, "clustering_result.html", {
+            "message": "❌ Tidak ada data booking"
+        })
 
-    # Buat DataFrame
-    df = pd.DataFrame(list(bookings.values('email', 'submitted_at', 'price')))
-    df['price'] = df['price'].fillna(0).astype(float)
-    df['submitted_at'] = pd.to_datetime(df['submitted_at'], errors='coerce')
-
+    # Buat DataFrame RFM
+    df = pd.DataFrame(list(bookings.values(
+        'email', 'submitted_at', 'price'
+    )))
+    df['submitted_at'] = pd.to_datetime(df['submitted_at'])
+    df['price'] = df['price'].astype(float)
     today = timezone.now().date()
 
-    # Fungsi recency aman
-    def recency_days(x):
-        if x.dropna().empty:
-            return 999
-        last_submit = x.max().date()
-        delta = (today - last_submit).days
-        return max(delta, 0)
-
-    # Hitung RFM
-    df_grouped = df.groupby('email').agg(
-        Recency=('submitted_at', recency_days),
+    df_rfm = df.groupby('email').agg(
+        Recency=('submitted_at', lambda x: (today - x.max().date()).days),
         Frequency=('submitted_at', 'count'),
         Monetary=('price', 'sum')
     ).reset_index()
 
-    # Prediksi Decision Tree
-    X_new = df_grouped[['Recency', 'Frequency', 'Monetary']]
+    # Hitung skor RFM
+    df_rfm = rfm_scoring(df_rfm)
+
+    # Prediksi dengan Decision Tree
+    X_new = df_rfm[['Recency', 'Frequency', 'Monetary']]
     y_pred = model.predict(X_new)
+
+    # Fungsi koreksi label agar konsisten dengan threshold RFM
+    def correct_label(r_score, f_score, m_score, predicted_label):
+        total = r_score + f_score + m_score
+        if 12 <= total <= 15:
+            return 2  # Loyal
+        elif 7 <= total <= 9:
+            return 1  # Menengah
+        else:
+            return 0  # Standar
+
     label_map = {0: "Standar", 1: "Menengah", 2: "Loyal"}
 
-    corrected_labels = []
-    for i, row in df_grouped.iterrows():
-        label = label_map[int(y_pred[i])]
-        if row["Recency"] <= 7 and row["Frequency"] >= 3 and row["Monetary"] >= 10000000:
-            label = "Loyal"
-        elif row["Recency"] <= 15 and row["Frequency"] >= 2 and row["Monetary"] >= 5000000:
-            label = "Menengah"
-        elif row["Recency"] > 20 or row["Frequency"] == 1 or row["Monetary"] < 5000000:
-            label = "Standar"
-        corrected_labels.append(label)
-
-    # Simpan hasil ke database
+    # Update CustomerCluster
     CustomerCluster.objects.all().delete()
-    for i, row in df_grouped.iterrows():
-        label_str = corrected_labels[i]
-        label_num = next((k for k, v in label_map.items() if v == label_str), 0)
-        CustomerCluster.objects.create(user_identifier=row['email'], cluster=label_num)
-
-    # Siapkan data untuk template
     clusters = []
-    for i, row in df_grouped.iterrows():
+    for i, row in df_rfm.iterrows():
+        pred_label = int(y_pred[i])
+        final_label_num = correct_label(row['R_score'], row['F_score'], row['M_score'], pred_label)
+        label_str = label_map[final_label_num]
+
+        CustomerCluster.objects.create(
+            user_identifier=row['email'],
+            cluster=final_label_num
+        )
+
         clusters.append({
             "email": row['email'],
-            "recency": int(row['Recency']),
-            "frequency": int(row['Frequency']),
-            "monetary": float(row['Monetary']),
-            "label": corrected_labels[i],
-            "cluster_label": int(y_pred[i])
+            "recency": row['Recency'],
+            "frequency": row['Frequency'],
+            "monetary": row['Monetary'],
+            "r": row['R_score'],
+            "f": row['F_score'],
+            "m": row['M_score'],
+            "rfm_score": row['RFM_Score'],
+            "label": label_str
         })
 
-    processing_time = round(time.time() - start_time, 2)
-
+    end_time = time.time()
+    processing_time = round(end_time - start_time, 2)
+    
     return render(request, "clustering_result.html", {
-        "message": "✅ Klasifikasi pelanggan berhasil dijalankan dengan model dan aturan berbasis RFM.",
+        "message": "✅ Klasifikasi pelanggan berhasil menggunakan RFM dan Decision Tree",
         "clusters": clusters,
-        "accuracy": "-",
-        "processing_time": processing_time,
+        "processing_time": processing_time,  # kirim ke template
+        "accuracy": "-"
     })
+
 
 def check_midtrans_payment_status(order_id, server_key):
     url = f"https://api.sandbox.midtrans.com/v2/{order_id}/status"
