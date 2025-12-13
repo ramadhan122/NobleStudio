@@ -98,10 +98,7 @@
 
         <!-- RFM Table (Full Width) -->
         <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 mb-8">
-            <h3 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">
                 Nilai RFM Customer
             </h3>
 
@@ -109,40 +106,36 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="bg-gray-50">
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">Customer</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recency</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monetary</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">Label</th>
+                            <th class="px-4 py-2">Customer</th>
+                            <th class="px-4 py-2">R</th>
+                            <th class="px-4 py-2">F</th>
+                            <th class="px-4 py-2">M</th>
+                            <th class="px-4 py-2">Total RFM</th>
+                            <th class="px-4 py-2">Label</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody>
                         {% for rfm in clusters %}
-                        <tr class="hover:bg-gray-50 transition-colors duration-200">
-                            <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ rfm.email }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">{{ rfm.recency }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">{{ rfm.frequency }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-600">{{ rfm.monetary|floatformat:0 }}</td>
-                            <td class="px-4 py-4 whitespace-nowrap">
+                        <tr class="border-t">
+                            <td class="px-4 py-2">{{ rfm.email }}</td>
+                            <td class="px-4 py-2">{{ rfm.r }}</td>
+                            <td class="px-4 py-2">{{ rfm.f }}</td>
+                            <td class="px-4 py-2">{{ rfm.m }}</td>
+                            <td class="px-4 py-2 font-semibold">{{ rfm.rfm_score }}</td>
+                            <td class="px-4 py-2">
                                 {% if rfm.label == "Standar" %}
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        Standar
-                                    </span>
+                                    <span class="text-blue-600">Standar</span>
                                 {% elif rfm.label == "Menengah" %}
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        Menengah
-                                    </span>
+                                    <span class="text-yellow-600">Menengah</span>
                                 {% else %}
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        Loyal
-                                    </span>
+                                    <span class="text-green-600">Loyal</span>
                                 {% endif %}
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="px-4 py-8 text-center text-gray-500">
-                                Belum ada data RFM
+                            <td colspan="6" class="text-center py-4 text-gray-500">
+                                Tidak ada data
                             </td>
                         </tr>
                         {% endfor %}
