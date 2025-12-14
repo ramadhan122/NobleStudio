@@ -15,6 +15,7 @@ urlpatterns = [
     path('booking/', views.booking_view, name='booking'),
     path('schedule/', views.booking_calendar, name='booking_calendar'),
     path("", include("booking.urls")),
+    path('discount/', include('discount.urls')),
     # auth routes
     path("accounts/", include("allauth.urls")),   # kalau tetap mau Google login
     path("auth/", include("accounts.urls")),      # CSRF register/login/logout
