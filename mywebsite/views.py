@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from discount.models import UserDiscount
 from portfolio.forms import TestimonialForm
 from portfolio.models import Photo, Photographer, Testimonial  # pastikan import Photographer
 from booking.forms import BookingForm
@@ -10,6 +11,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib import messages
+from django.utils import timezone
 
 # Create your views here.
 def index(request):
@@ -33,10 +35,20 @@ def index(request):
     else:
         form = TestimonialForm()
 
+    discount = None
+
+    if request.user.is_authenticated:
+        discount = UserDiscount.objects.filter(
+            user=request.user,
+            is_active=True,
+            expired_at__gte=timezone.now()
+        ).order_by('-created_at').first()
+
     return render(request, 'index.html', {
         'approved_bookings': approved_bookings,
         'testimonials': testimonials,
-        'form': form
+        'form': form,
+        'discount': discount
     })
 
 def about(request):
