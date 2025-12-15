@@ -21,7 +21,8 @@ def index(request):
     approved_bookings = []
     if user_email:
         approved_bookings = Booking.objects.filter(
-            email=user_email, approved='approved'
+            email=user_email,
+            approved='approved'
         ).order_by('-date')
 
     # === Bagian Testimonial ===
@@ -35,11 +36,11 @@ def index(request):
     else:
         form = TestimonialForm()
 
+    # === Bagian DISCOUNT (INI YANG DIPERBAIKI) ===
     discount = None
-
     if request.user.is_authenticated:
         discount = UserDiscount.objects.filter(
-            user=request.user,
+            booking__email=request.user.email,
             is_active=True,
             expired_at__gte=timezone.now()
         ).order_by('-created_at').first()
