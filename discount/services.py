@@ -1,7 +1,7 @@
 import requests
 from .messages import discount_wa_message
 
-FONNTE_TOKEN = "U2x8AMwDnCicKEFES9x7"
+FONNTE_TOKEN = "yor-api"
 
 def send_discount_whatsapp(booking, discount):
     if not booking.phone:
