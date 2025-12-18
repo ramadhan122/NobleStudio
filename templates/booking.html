@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book a Photography Session</title>
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,146 +17,313 @@
                         'photo-light': '#f8f9fa'
                     },
                     fontFamily: {
-                        'sans': ['"Open Sans"', 'sans-serif'],
-                        'display': ['"Playfair Display"', 'serif']
+                        sans: ['Open Sans', 'sans-serif'],
+                        display: ['Playfair Display', 'serif']
                     }
                 }
             }
         }
     </script>
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 </head>
+
 <body class="bg-photo-light font-sans">
-    <!-- Hero Section -->
-    <div class="bg-photo-dark text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl font-display mb-4">Capture Your Special Moments</h1>
-            <p class="text-xl text-photo-gold max-w-3xl mx-auto">Book a professional photography session tailored to your needs</p>
+
+<!-- ================= POPUP SUCCESS ================= -->
+{% if messages %}
+{% for message in messages %}
+    {% if message.tags == "success" %}
+    <div id="success-modal"
+         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+
+        <div class="bg-white w-full max-w-md rounded-xl p-8 text-center shadow-2xl animate-fadeIn">
+
+            <div class="success-checkmark mb-6">
+                <div class="check-icon">
+                    <span class="icon-line line-tip"></span>
+                    <span class="icon-line line-long"></span>
+                    <div class="icon-circle"></div>
+                    <div class="icon-fix"></div>
+                </div>
+            </div>
+
+
+            <h2 class="text-2xl font-display text-gray-800 mb-2">
+                Booking Berhasil
+            </h2>
+
+            <p class="text-gray-600 mb-6">
+                {{ message }}
+            </p>
+
+            <button onclick="redirectHome()"
+                    class="bg-photo-gold hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg transition">
+                OK
+            </button>
         </div>
     </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
 
-    <!-- Main Content -->
-    <div class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-        
 
-        <!-- Booking Card -->
-        <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
-            <div class="md:flex">
-                <!-- Visual Section -->
-                <div class="md:w-2/5 bg-gradient-to-br from-photo-dark to-gray-900 p-8 flex flex-col justify-center">
-                    <div class="text-center text-white">
-                        <svg class="h-16 w-16 mx-auto text-photo-gold mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                        <h2 class="text-2xl font-display mb-4">Session Details</h2>
-                        <p class="text-gray-300 mb-6">Fill out the form to book your personalized photography experience</p>
-                        <div class="space-y-3 text-left max-w-xs mx-auto">
-                            <div class="flex items-center">
-                                <svg class="h-5 w-5 text-photo-gold mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span>1-2 hour sessions</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg class="h-5 w-5 text-photo-gold mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                <span>On-location or studio</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg class="h-5 w-5 text-photo-gold mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                                </svg>
-                                <span>Flexible packages</span>
-                            </div>
-                        </div>
-                    </div>
+<!-- ================= HERO ================= -->
+<div class="bg-photo-dark text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-display mb-4">
+            Capture Your Special Moments
+        </h1>
+        <p class="text-xl text-photo-gold max-w-3xl mx-auto">
+            Book a professional photography session tailored to your needs
+        </p>
+    </div>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div class="max-w-4xl mx-auto py-16 px-4">
+
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+        <div class="md:flex">
+
+            <!-- Visual -->
+            <div class="md:w-2/5 bg-gradient-to-br from-photo-dark to-gray-900 p-8 flex items-center justify-center">
+                <div class="text-center text-white">
+                    <h2 class="text-2xl font-display mb-4">Session Details</h2>
+                    <p class="text-gray-300">
+                        Fill out the form to book your personalized photography experience
+                    </p>
                 </div>
+            </div>
 
-                <!-- Form Section -->
-                <div class="md:w-3/5 p-8 md:p-12">
-                    <h2 class="text-3xl font-display text-gray-800 mb-8">Mulai Jadwalkan Sesi Kamu</h2>
-                    <form method="POST" class="space-y-6">
-                        {% csrf_token %}
-                        
-                        <!-- Custom form rendering instead of form.as_p -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {% for field in form %}
-                            <div class="{% if forloop.counter > 2 %}md:col-span-2{% endif %}">
-                                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                                    {{ field.label }}
-                                    {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
-                                </label>
+            <!-- Form -->
+            <div class="md:w-3/5 p-8 md:p-12">
+                <h2 class="text-3xl font-display text-gray-800 mb-8">
+                    Mulai Jadwalkan Sesi Kamu
+                </h2>
 
-                                {% if field.name == "email" %}
-                                    <!-- Auto isi email dari user -->
-                                    <input type="email" 
-                                        name="email" 
-                                        id="{{ field.id_for_label }}"
-                                        value="{{ request.user.email }}" 
-                                        class="w-full p-3 border rounded bg-white text-gray-900 font-semibold"
-                                        readonly>
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
 
-                                {% elif field.name == "name" %}
-                                    <!-- Auto isi name dari user -->
-                                    <input type="text" 
-                                        name="name" 
-                                        id="{{ field.id_for_label }}"
-                                        value="{{ request.user.first_name }} {{ request.user.last_name }}" 
-                                        class="w-full p-3 border rounded bg-white text-gray-900 font-semibold"
-                                        readonly>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for field in form %}
+                        <div class="{% if forloop.counter > 2 %}md:col-span-2{% endif %}">
 
-                                {% else %}
-                                    {{ field }}
+                            <label for="{{ field.id_for_label }}"
+                                   class="block text-sm font-medium text-gray-700 mb-1">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-red-500">*</span>
                                 {% endif %}
+                            </label>
 
-                                {% if field.help_text %}
-                                <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
-                                {% endif %}
-                                {% for error in field.errors %}
+                            {% if field.name == "email" %}
+                                <input type="email"
+                                       name="email"
+                                       id="{{ field.id_for_label }}"
+                                       value="{{ request.user.email }}"
+                                       readonly
+                                       class="form-input bg-gray-100 font-semibold cursor-not-allowed">
+
+                            {% elif field.name == "name" %}
+                                <input type="text"
+                                       name="name"
+                                       id="{{ field.id_for_label }}"
+                                       value="{{ request.user.first_name }} {{ request.user.last_name }}"
+                                       readonly
+                                       class="form-input bg-gray-100 font-semibold cursor-not-allowed">
+
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+
+                            {% for error in field.errors %}
                                 <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-                                {% endfor %}
-                            </div>
                             {% endfor %}
                         </div>
+                        {% endfor %}
+                    </div>
 
-                        <div class="pt-4">
-                            <button type="submit" class="w-full bg-photo-gold hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105">
-                                Request Booking
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
+                    <button type="submit"
+                            class="w-full bg-photo-gold hover:bg-yellow-600 text-white font-bold py-3 rounded-lg transition">
+                        Request Booking
+                    </button>
+                </form>
             </div>
+
         </div>
     </div>
+</div>
 
-    <!-- Style form inputs -->
-    <style>
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.375rem;
-            background-color: #f8fafc;
-            transition: all 0.2s;
+<!-- ================= STYLE ================= -->
+<style>
+    /* Input Border Fix */
+    .form-input,
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db; /* gray-300 */
+        border-radius: 0.5rem;
+        background-color: #ffffff;
+        color: #111827;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus,
+    input:focus,
+    select:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
+    }
+
+    /* Popup animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
         }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-            background-color: white;
+        to {
+            opacity: 1;
+            transform: scale(1);
         }
-        
-        textarea {
-            min-height: 120px;
-            resize: vertical;
+    }
+
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* === SweetAlert Success Animation === */
+    .success-checkmark {
+        width: 80px;
+        height: 115px;
+        margin: 0 auto;
+    }
+
+    .success-checkmark .check-icon {
+        width: 80px;
+        height: 80px;
+        position: relative;
+        border-radius: 50%;
+        box-sizing: content-box;
+        border: 4px solid #4CAF50;
+    }
+
+    .success-checkmark .check-icon::before,
+    .success-checkmark .check-icon::after {
+        content: '';
+        height: 100px;
+        position: absolute;
+        background: #fff;
+        transform: rotate(-45deg);
+    }
+
+    .success-checkmark .check-icon::before {
+        top: 3px;
+        left: -2px;
+        width: 30px;
+        border-radius: 100px 0 0 100px;
+        transform-origin: 100% 50%;
+    }
+
+    .success-checkmark .check-icon::after {
+        top: 0;
+        left: 30px;
+        width: 60px;
+        border-radius: 0 100px 100px 0;
+        transform-origin: 0 50%;
+        animation: rotate-circle 4.25s ease-in;
+    }
+
+    .success-checkmark .icon-line {
+        height: 5px;
+        background-color: #4CAF50;
+        display: block;
+        border-radius: 2px;
+        position: absolute;
+        z-index: 10;
+    }
+
+    .success-checkmark .icon-line.line-tip {
+        top: 46px;
+        left: 14px;
+        width: 25px;
+        transform: rotate(45deg);
+        animation: icon-line-tip 0.75s;
+    }
+
+    .success-checkmark .icon-line.line-long {
+        top: 38px;
+        right: 8px;
+        width: 47px;
+        transform: rotate(-45deg);
+        animation: icon-line-long 0.75s;
+    }
+
+    .success-checkmark .icon-circle {
+        top: -4px;
+        left: -4px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        position: absolute;
+        border: 4px solid rgba(76, 175, 80, 0.5);
+        z-index: 10;
+    }
+
+    .success-checkmark .icon-fix {
+        top: 8px;
+        width: 5px;
+        left: 26px;
+        height: 85px;
+        position: absolute;
+        transform: rotate(-45deg);
+        background-color: #fff;
+        z-index: 1;
+    }
+
+    /* === Animations === */
+    @keyframes rotate-circle {
+        0%, 5% { transform: rotate(-45deg); }
+        12%, 100% { transform: rotate(-405deg); }
+    }
+
+    @keyframes icon-line-tip {
+        0%, 54% { width: 0; left: 1px; top: 19px; }
+        70% { width: 50px; left: -8px; top: 37px; }
+        84% { width: 17px; left: 21px; top: 48px; }
+        100% { width: 25px; left: 14px; top: 45px; }
+    }
+
+    @keyframes icon-line-long {
+        0%, 65% { width: 0; right: 46px; top: 54px; }
+        84% { width: 55px; right: 0; top: 35px; }
+        100% { width: 47px; right: 8px; top: 38px; }
+    }
+
+</style>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+    function redirectHome() {
+        window.location.href = "{% url 'index' %}";
+    }
+    
+     document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("success-modal");
+        if (modal) {
+            const icon = modal.querySelector(".check-icon");
+            icon.style.display = "none";
+            setTimeout(() => {
+                icon.style.display = "block";
+            }, 50);
         }
-        
-    </style>
+    });
+</script>
+
 </body>
-</html>     
+</html>

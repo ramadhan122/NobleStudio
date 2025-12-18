@@ -22,24 +22,33 @@ import os
 
 # === Booking View ===
 def booking_view(request):
-    """Menangani form booking pengguna."""
     if request.method == "POST":
         form = BookingForm(request.POST)
         if form.is_valid():
             booking = form.save(commit=False)
-            booking.name = f"{request.user.first_name} {request.user.last_name}"  # set name otomatis
-            booking.email = request.user.email  # set email otomatis
+
+            booking.user = request.user
+            booking.name = f"{request.user.first_name} {request.user.last_name}"
+            booking.email = request.user.email
+
             booking.save()
-            return redirect("success_page")
+
+            # 🔥 TAG KHUSUS BOOKING
+            messages.success(
+                request,
+                "Booking berhasil! Silakan lanjutkan pembayaran 📸",
+                extra_tags="booking"
+            )
+
+            return redirect("booking")
+
     else:
         form = BookingForm(initial={
-            'name': f"{request.user.first_name} {request.user.last_name}",
-            'email': request.user.email
+            "name": f"{request.user.first_name} {request.user.last_name}",
+            "email": request.user.email
         })
 
     return render(request, "booking.html", {"form": form})
-
-
 
 # === Notifikasi Booking ===
 def notif_booking(request):
