@@ -89,11 +89,20 @@
                                 </label>
 
                                 {% if field.name == "email" %}
-                                    <!-- Auto isi email dari Google -->
+                                    <!-- Auto isi email dari user -->
                                     <input type="email" 
                                         name="email" 
                                         id="{{ field.id_for_label }}"
                                         value="{{ request.user.email }}" 
+                                        class="w-full p-3 border rounded bg-white text-gray-900 font-semibold"
+                                        readonly>
+
+                                {% elif field.name == "name" %}
+                                    <!-- Auto isi name dari user -->
+                                    <input type="text" 
+                                        name="name" 
+                                        id="{{ field.id_for_label }}"
+                                        value="{{ request.user.first_name }} {{ request.user.last_name }}" 
                                         class="w-full p-3 border rounded bg-white text-gray-900 font-semibold"
                                         readonly>
 
@@ -109,7 +118,6 @@
                                 {% endfor %}
                             </div>
                             {% endfor %}
-
                         </div>
 
                         <div class="pt-4">
@@ -119,6 +127,7 @@
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
     </div>

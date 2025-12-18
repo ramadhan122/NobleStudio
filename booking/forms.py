@@ -8,4 +8,6 @@ class BookingForm(forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'}),
+            'name': forms.TextInput(attrs={'readonly': 'readonly'}),  # bikin readonly
+            'email': forms.EmailInput(attrs={'readonly': 'readonly'}),
         }

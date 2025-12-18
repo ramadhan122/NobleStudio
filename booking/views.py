@@ -27,14 +27,18 @@ def booking_view(request):
         form = BookingForm(request.POST)
         if form.is_valid():
             booking = form.save(commit=False)
-            booking.user = request.user
-            booking.email = request.user.email
+            booking.name = f"{request.user.first_name} {request.user.last_name}"  # set name otomatis
+            booking.email = request.user.email  # set email otomatis
             booking.save()
             return redirect("success_page")
     else:
-        form = BookingForm(initial={'email': request.user.email})
+        form = BookingForm(initial={
+            'name': f"{request.user.first_name} {request.user.last_name}",
+            'email': request.user.email
+        })
 
     return render(request, "booking.html", {"form": form})
+
 
 
 # === Notifikasi Booking ===
