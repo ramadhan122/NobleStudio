@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book a Photography Session</title>
 
-    <!-- Tailwind -->
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,313 +17,166 @@
                         'photo-light': '#f8f9fa'
                     },
                     fontFamily: {
-                        sans: ['Open Sans', 'sans-serif'],
-                        display: ['Playfair Display', 'serif']
+                        sans: ['"Open Sans"', 'sans-serif'],
+                        display: ['"Playfair Display"', 'serif']
                     }
                 }
             }
         }
     </script>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
 </head>
 
 <body class="bg-photo-light font-sans">
 
-<!-- ================= POPUP SUCCESS ================= -->
-{% if messages %}
-{% for message in messages %}
-    {% if message.tags == "success" %}
-    <div id="success-modal"
-         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-
-        <div class="bg-white w-full max-w-md rounded-xl p-8 text-center shadow-2xl animate-fadeIn">
-
-            <div class="success-checkmark mb-6">
-                <div class="check-icon">
-                    <span class="icon-line line-tip"></span>
-                    <span class="icon-line line-long"></span>
-                    <div class="icon-circle"></div>
-                    <div class="icon-fix"></div>
-                </div>
-            </div>
-
-
-            <h2 class="text-2xl font-display text-gray-800 mb-2">
-                Booking Berhasil
-            </h2>
-
-            <p class="text-gray-600 mb-6">
+    <!-- SUCCESS POPUP -->
+    {% if messages %}
+    <div
+        id="success-popup"
+        class="fixed top-6 right-6 z-50 flex items-center gap-3 px-6 py-4
+               bg-green-500 text-white rounded-xl shadow-xl
+               transform scale-0 opacity-0 transition-all duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        <span class="font-semibold">
+            {% for message in messages %}
                 {{ message }}
-            </p>
-
-            <button onclick="redirectHome()"
-                    class="bg-photo-gold hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-lg transition">
-                OK
-            </button>
-        </div>
+            {% endfor %}
+        </span>
     </div>
     {% endif %}
-{% endfor %}
-{% endif %}
 
+    <!-- HERO SECTION -->
+    <section class="bg-photo-dark text-white py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-display mb-4">
+                Capture Your Special Moments
+            </h1>
+            <p class="text-xl text-photo-gold">
+                Book a professional photography session tailored to your needs
+            </p>
+        </div>
+    </section>
 
-<!-- ================= HERO ================= -->
-<div class="bg-photo-dark text-white py-20">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-display mb-4">
-            Capture Your Special Moments
-        </h1>
-        <p class="text-xl text-photo-gold max-w-3xl mx-auto">
-            Book a professional photography session tailored to your needs
-        </p>
-    </div>
-</div>
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto py-16 px-4">
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+            <div class="md:flex">
 
-<!-- ================= MAIN ================= -->
-<div class="max-w-4xl mx-auto py-16 px-4">
-
-    <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
-        <div class="md:flex">
-
-            <!-- Visual -->
-            <div class="md:w-2/5 bg-gradient-to-br from-photo-dark to-gray-900 p-8 flex items-center justify-center">
-                <div class="text-center text-white">
+                <!-- LEFT INFO -->
+                <div class="md:w-2/5 bg-gradient-to-br from-photo-dark to-gray-900 p-8 text-white text-center">
                     <h2 class="text-2xl font-display mb-4">Session Details</h2>
                     <p class="text-gray-300">
                         Fill out the form to book your personalized photography experience
                     </p>
                 </div>
-            </div>
 
-            <!-- Form -->
-            <div class="md:w-3/5 p-8 md:p-12">
-                <h2 class="text-3xl font-display text-gray-800 mb-8">
-                    Mulai Jadwalkan Sesi Kamu
-                </h2>
+                <!-- FORM -->
+                <div class="md:w-3/5 p-8 md:p-12">
+                    <h2 class="text-3xl font-display text-gray-800 mb-8">
+                        Mulai Jadwalkan Sesi Kamu
+                    </h2>
 
-                <form method="POST" class="space-y-6">
-                    {% csrf_token %}
+                    <form method="POST" class="space-y-6">
+                        {% csrf_token %}
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {% for field in form %}
-                        <div class="{% if forloop.counter > 2 %}md:col-span-2{% endif %}">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {% for field in form %}
+                            <div class="{% if forloop.counter > 2 %}md:col-span-2{% endif %}">
 
-                            <label for="{{ field.id_for_label }}"
-                                   class="block text-sm font-medium text-gray-700 mb-1">
-                                {{ field.label }}
-                                {% if field.field.required %}
-                                    <span class="text-red-500">*</span>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    {{ field.label }}
+                                    {% if field.field.required %}
+                                        <span class="text-red-500">*</span>
+                                    {% endif %}
+                                </label>
+
+                                {% if field.name == "email" %}
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value="{{ request.user.email }}"
+                                        readonly
+                                        class="w-full p-3 border rounded font-semibold bg-white" />
+
+                                {% elif field.name == "name" %}
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value="{{ request.user.first_name }} {{ request.user.last_name }}"
+                                        readonly
+                                        class="w-full p-3 border rounded font-semibold bg-white" />
+
+                                {% else %}
+                                    {{ field }}
                                 {% endif %}
-                            </label>
 
-                            {% if field.name == "email" %}
-                                <input type="email"
-                                       name="email"
-                                       id="{{ field.id_for_label }}"
-                                       value="{{ request.user.email }}"
-                                       readonly
-                                       class="form-input bg-gray-100 font-semibold cursor-not-allowed">
+                                {% for error in field.errors %}
+                                    <p class="text-sm text-red-600">{{ error }}</p>
+                                {% endfor %}
 
-                            {% elif field.name == "name" %}
-                                <input type="text"
-                                       name="name"
-                                       id="{{ field.id_for_label }}"
-                                       value="{{ request.user.first_name }} {{ request.user.last_name }}"
-                                       readonly
-                                       class="form-input bg-gray-100 font-semibold cursor-not-allowed">
-
-                            {% else %}
-                                {{ field }}
-                            {% endif %}
-
-                            {% for error in field.errors %}
-                                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            </div>
                             {% endfor %}
                         </div>
-                        {% endfor %}
-                    </div>
 
-                    <button type="submit"
+                        <button
+                            type="submit"
                             class="w-full bg-photo-gold hover:bg-yellow-600 text-white font-bold py-3 rounded-lg transition">
-                        Request Booking
-                    </button>
-                </form>
+                            Request Booking
+                        </button>
+                    </form>
+                </div>
+
             </div>
-
         </div>
-    </div>
-</div>
+    </main>
 
-<!-- ================= STYLE ================= -->
-<style>
-    /* Input Border Fix */
-    .form-input,
-    input,
-    select,
-    textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db; /* gray-300 */
-        border-radius: 0.5rem;
-        background-color: #ffffff;
-        color: #111827;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .form-input:focus,
-    input:focus,
-    select:focus,
-    textarea:focus {
-        outline: none;
-        border-color: #d4af37;
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.35);
-    }
-
-    /* Popup animation */
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
+    <!-- FORM BASE STYLE -->
+    <style>
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            background-color: #f8fafc;
         }
-        to {
-            opacity: 1;
-            transform: scale(1);
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            background: white;
         }
-    }
+    </style>
 
-    .animate-fadeIn {
-        animation: fadeIn 0.3s ease-out;
-    }
+    <!-- POPUP SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const popup = document.getElementById('success-popup');
+            if (!popup) return;
 
-    /* === SweetAlert Success Animation === */
-    .success-checkmark {
-        width: 80px;
-        height: 115px;
-        margin: 0 auto;
-    }
+            // show popup
+            popup.classList.remove('scale-0', 'opacity-0');
+            popup.classList.add('scale-100', 'opacity-100');
 
-    .success-checkmark .check-icon {
-        width: 80px;
-        height: 80px;
-        position: relative;
-        border-radius: 50%;
-        box-sizing: content-box;
-        border: 4px solid #4CAF50;
-    }
-
-    .success-checkmark .check-icon::before,
-    .success-checkmark .check-icon::after {
-        content: '';
-        height: 100px;
-        position: absolute;
-        background: #fff;
-        transform: rotate(-45deg);
-    }
-
-    .success-checkmark .check-icon::before {
-        top: 3px;
-        left: -2px;
-        width: 30px;
-        border-radius: 100px 0 0 100px;
-        transform-origin: 100% 50%;
-    }
-
-    .success-checkmark .check-icon::after {
-        top: 0;
-        left: 30px;
-        width: 60px;
-        border-radius: 0 100px 100px 0;
-        transform-origin: 0 50%;
-        animation: rotate-circle 4.25s ease-in;
-    }
-
-    .success-checkmark .icon-line {
-        height: 5px;
-        background-color: #4CAF50;
-        display: block;
-        border-radius: 2px;
-        position: absolute;
-        z-index: 10;
-    }
-
-    .success-checkmark .icon-line.line-tip {
-        top: 46px;
-        left: 14px;
-        width: 25px;
-        transform: rotate(45deg);
-        animation: icon-line-tip 0.75s;
-    }
-
-    .success-checkmark .icon-line.line-long {
-        top: 38px;
-        right: 8px;
-        width: 47px;
-        transform: rotate(-45deg);
-        animation: icon-line-long 0.75s;
-    }
-
-    .success-checkmark .icon-circle {
-        top: -4px;
-        left: -4px;
-        width: 80px;
-        height: 80px;
-        border-radius: 50%;
-        position: absolute;
-        border: 4px solid rgba(76, 175, 80, 0.5);
-        z-index: 10;
-    }
-
-    .success-checkmark .icon-fix {
-        top: 8px;
-        width: 5px;
-        left: 26px;
-        height: 85px;
-        position: absolute;
-        transform: rotate(-45deg);
-        background-color: #fff;
-        z-index: 1;
-    }
-
-    /* === Animations === */
-    @keyframes rotate-circle {
-        0%, 5% { transform: rotate(-45deg); }
-        12%, 100% { transform: rotate(-405deg); }
-    }
-
-    @keyframes icon-line-tip {
-        0%, 54% { width: 0; left: 1px; top: 19px; }
-        70% { width: 50px; left: -8px; top: 37px; }
-        84% { width: 17px; left: 21px; top: 48px; }
-        100% { width: 25px; left: 14px; top: 45px; }
-    }
-
-    @keyframes icon-line-long {
-        0%, 65% { width: 0; right: 46px; top: 54px; }
-        84% { width: 55px; right: 0; top: 35px; }
-        100% { width: 47px; right: 8px; top: 38px; }
-    }
-
-</style>
-
-<!-- ================= SCRIPT ================= -->
-<script>
-    function redirectHome() {
-        window.location.href = "{% url 'index' %}";
-    }
-    
-     document.addEventListener("DOMContentLoaded", function () {
-        const modal = document.getElementById("success-modal");
-        if (modal) {
-            const icon = modal.querySelector(".check-icon");
-            icon.style.display = "none";
+            // hide popup + redirect
             setTimeout(() => {
-                icon.style.display = "block";
-            }, 50);
-        }
-    });
-</script>
+                popup.classList.remove('scale-100', 'opacity-100');
+                popup.classList.add('scale-0', 'opacity-0');
+
+                // redirect ke index
+                window.location.href = "{% url 'index' %}";
+            }, 3000);
+        });
+    </script>
+
 
 </body>
 </html>
