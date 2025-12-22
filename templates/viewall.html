@@ -383,6 +383,7 @@
     <!-- Gallery Section -->
     <section class="gallery-container">
         <div class="container-fluid">
+
             <!-- Search Bar -->
             <div class="search-bar">
                 <input type="text" class="search-input" placeholder="Cari Berdasarkan Kategori..." id="searchInput">
@@ -399,82 +400,94 @@
                 <button class="filter-btn" data-category="street">Street</button>
             </div>
 
-            {% if photos %}
-                <div class="photo-grid" id="photoGrid">
-                    {% for photo in photos %}
-                    <div class="photo-card fade-in" 
-                         data-category="{{ photo.category.name|lower|default:'uncategorized' }}"
-                         data-title="{{ photo.title|default:'Untitled'|lower }}"
-                         data-photographer="{{ photo.photographer.name|default:'Unknown'|lower }}"
-                         data-index="{{ forloop.counter0 }}">
-                        
-                        <div class="image-container">
-                            {% if photo.category %}
-                                <div class="category-badge">{{ photo.category.name }}</div>
-                            {% endif %}
-                            
-                            {% if photo.image_url %}
-                                <img src="{{ photo.image_url.url }}" 
-                                     class="photo-image" 
-                                     alt="{{ photo.title|default:'Photo' }}"
-                                     loading="lazy">
-                            {% else %}
-                                <div class="img-placeholder">
-                                    <i class="fas fa-image placeholder-icon"></i>
-                                    <span>No Image Available</span>
-                                </div>
-                            {% endif %}
-                            
-                            <div class="image-overlay">
-                                <div class="overlay-content">
-                                    <i class="fas fa-eye" style="font-size: 2rem;"></i>
-                                    <button class="view-btn" 
-                                            onclick="openLightbox('{{ photo.image_url.url|escapejs }}', '{{ photo.title|default:'Untitled'|escapejs }}')">
-                                        View Full Size
-                                    </button>
-                                </div>
+            {% if works %}
+            <div class="photo-grid" id="photoGrid">
+                {% for work in works %}
+                <div class="photo-card fade-in"
+                    data-category="{{ work.category.name|lower|default:'uncategorized' }}"
+                    data-title="{{ work.title|default:'Untitled'|lower }}"
+                    data-photographer="{{ work.photographer.name|default:'Unknown'|lower }}"
+                    data-index="{{ forloop.counter0 }}">
+
+                    <div class="image-container">
+                        {% if work.category %}
+                            <div class="category-badge">{{ work.category.name }}</div>
+                        {% endif %}
+
+                        {% if work.image_url %}
+                            <img src="{{ work.image_url.url }}"
+                                class="photo-image"
+                                alt="{{ work.title|default:'Photo' }}"
+                                loading="lazy">
+                        {% else %}
+                            <div class="img-placeholder">
+                                <i class="fas fa-image placeholder-icon"></i>
+                                <span>No Image Available</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="image-overlay">
+                            <div class="overlay-content">
+                                <i class="fas fa-eye" style="font-size: 2rem;"></i>
+                                {% if work.image_url %}
+                                <button class="view-btn"
+                                    data-img="{{ work.image_url.url|escapejs }}"
+                                    data-title="{{ work.title|default:'Untitled'|escapejs }}">
+                                    View Full Size
+                                </button>
+
+                                {% endif %}
                             </div>
                         </div>
 
-                        <div class="card-content">
-                            <h3 class="card-title">{{ photo.title|default:"Untitled Photo" }}</h3>
-                            <p class="card-description">
-                                {{ photo.description|default:"A beautiful captured moment"|truncatewords:20 }}
-                            </p>
-                            
-                            <div class="card-meta">
-                                <div class="meta-item">
-                                    <i class="fas fa-user meta-icon"></i>
-                                    <span>{{ photo.photographer.name|default:"Unknown Artist" }}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-calendar meta-icon"></i>
-                                    <span>{{ photo.shoot_date|date:"M j, Y"|default:"Recently" }}</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-upload meta-icon"></i>
-                                    <span>{{ photo.created_at|timesince }} ago</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-heart meta-icon"></i>
-                                    <span>Professional Shot</span>
-                                </div>
+                    </div>
+
+                    <div class="card-content">
+                        <h3 class="card-title">{{ work.title|default:"Untitled Photo" }}</h3>
+
+                        <p class="card-description">
+                            {{ work.description|default:"A beautiful captured moment"|truncatewords:20 }}
+                        </p>
+
+                        <div class="card-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-user meta-icon"></i>
+                                <span>{{ work.photographer.name|default:"Unknown Artist" }}</span>
+                            </div>
+
+                            <div class="meta-item">
+                                <i class="fas fa-calendar meta-icon"></i>
+                                <span>{{ work.shoot_date|date:"M j, Y"|default:"Recently" }}</span>
+                            </div>
+
+                            <div class="meta-item">
+                                <i class="fas fa-upload meta-icon"></i>
+                                <span>{{ work.created_at|timesince }} ago</span>
+                            </div>
+
+                            <div class="meta-item">
+                                <i class="fas fa-heart meta-icon"></i>
+                                <span>Professional Shot</span>
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
+
                 </div>
+                {% endfor %}
+            </div>
             {% else %}
-                <div class="empty-state">
-                    <i class="fas fa-camera empty-icon" style="color: #666;"></i>
-                    <h2 class="empty-title" style="color: #333;">No Photos Yet</h2>
-                    <p class="empty-description" style="color: #666;">
-                        The gallery is waiting for your amazing shots. Upload some photos to get started!
-                    </p>
-                </div>
+            <div class="empty-state">
+                <i class="fas fa-camera empty-icon" style="color: #666;"></i>
+                <h2 class="empty-title" style="color: #333;">No Works Yet</h2>
+                <p class="empty-description" style="color: #666;">
+                    The gallery is waiting for your amazing works.
+                </p>
+            </div>
             {% endif %}
+
         </div>
     </section>
+
 
     <!-- Lightbox Modal -->
     <div class="modal fade" id="lightboxModal" tabindex="-1">
@@ -535,6 +548,13 @@
             });
         }
 
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const img = btn.dataset.img;
+                const title = btn.dataset.title;
+                openLightbox(img, title);
+            });
+        });
         // Lightbox functionality
         function openLightbox(imageSrc, title) {
             document.getElementById('lightboxImage').src = imageSrc;

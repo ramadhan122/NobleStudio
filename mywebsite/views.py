@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from discount.models import UserDiscount
 from portfolio.forms import TestimonialForm
-from portfolio.models import Photo, Photographer, Testimonial  # pastikan import Photographer
+from portfolio.models import Work, Photographer, Testimonial  # pastikan import Photographer
 from booking.forms import BookingForm
 from booking.models import Booking
 from django.views.decorators.http import require_GET
@@ -56,17 +56,17 @@ def about(request):
     return render(request,'about.html')
 
 def viewall(request):
-    photos = Photo.objects.select_related('photographer', 'category').all()
+    photos = Work.objects.select_related('photographer', 'category')
     return render(request, 'viewall.html', {'photos': photos})
+
 
 def photo_gallery(request):
-    photos = Photo.objects.all().select_related('photographer', 'category')
+    photos = Work.objects.select_related('photographer', 'category')
     return render(request, 'viewall.html', {'photos': photos})
-
 
 
 def myporto(request):
-    photos = Photo.objects.select_related('photographer', 'category').all()
+    photos = Work.objects.select_related('photographer', 'category')
     photographers = Photographer.objects.all()
     return render(request, 'myporto.html', {
         'photos': photos,

@@ -15,9 +15,9 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Photo(models.Model):
-    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='photos')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='photos')
+class Work(models.Model):
+    photographer = models.ForeignKey(Photographer, on_delete=models.CASCADE, related_name='works')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='works')
     title = models.CharField(max_length=100)
     image_url = models.ImageField(upload_to='media/photos/')
     description = models.TextField()

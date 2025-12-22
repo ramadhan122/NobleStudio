@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Photographer, Category, Photo, Testimonial
+from .models import Photographer, Category, Work, Testimonial
 
 @admin.register(Photographer)
 class PhotographerAdmin(admin.ModelAdmin):
@@ -14,8 +14,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
-@admin.register(Photo)
-class PhotoAdmin(admin.ModelAdmin):
+@admin.register(Work)
+class WorkAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'photographer','image_url','description', 'shoot_date', 'created_at')
     list_filter = ('category', 'photographer', 'shoot_date')
     search_fields = ('title', 'description')
