@@ -17,7 +17,6 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
     list_display = ('title', 'category', 'photographer','image_url','description', 'shoot_date', 'created_at')
-    list_filter = ('category', 'photographer', 'shoot_date')
     search_fields = ('title', 'description')
 
 @admin.register(Testimonial)
