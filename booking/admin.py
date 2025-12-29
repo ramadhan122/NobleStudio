@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Booking
-from .models import CustomerCluster
+from .models import CustomerClassification
 
 
 @admin.register(Booking)
@@ -9,8 +9,8 @@ class BookingAdmin(admin.ModelAdmin):
     search_fields = ('name', 'email', 'phone')
     list_editable = ('price',)  # supaya bisa langsung edit dari list view
 
-@admin.register(CustomerCluster)
-class CustomerClusterAdmin(admin.ModelAdmin):
-    list_display = ("id", "user_identifier", "cluster")
-    list_filter = ("cluster",)
-    search_fields = ("user_identifier",)  # cari berdasarkan email
+@admin.register(CustomerClassification)
+class CustomerClassificationAdmin(admin.ModelAdmin):
+    list_display = ("id", "user_identifier", "predicted_class")
+    list_filter = ("predicted_class",)
+    search_fields = ("user_identifier",)

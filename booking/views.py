@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.utils.timezone import now
 from .forms import BookingForm
-from .models import Booking, CustomerCluster, Customer
+from .models import Booking, CustomerClassification, Customer
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split, cross_val_score
@@ -193,17 +193,14 @@ def run_customer_clustering(request):
             "message": "❌ Model belum dilatih"
         })
 
-    # Load model Decision Tree
     model = joblib.load(model_path)
 
-    # Ambil data booking
     bookings = Booking.objects.all()
     if not bookings.exists():
         return render(request, "clustering_result.html", {
             "message": "❌ Tidak ada data booking"
         })
 
-    # Buat DataFrame RFM
     df = pd.DataFrame(list(bookings.values(
         'email', 'submitted_at', 'price'
     )))
@@ -217,36 +214,36 @@ def run_customer_clustering(request):
         Monetary=('price', 'sum')
     ).reset_index()
 
-    # Hitung skor RFM
     df_rfm = rfm_scoring(df_rfm)
 
-    # Prediksi dengan Decision Tree
     X_new = df_rfm[['Recency', 'Frequency', 'Monetary']]
     y_pred = model.predict(X_new)
 
-    # Fungsi koreksi label agar konsisten dengan threshold RFM
     def correct_label(r_score, f_score, m_score, predicted_label):
         total = r_score + f_score + m_score
         if 12 <= total <= 15:
-            return 2  # Loyal
+            return 2
         elif 7 <= total <= 9:
-            return 1  # Menengah
+            return 1
         else:
-            return 0  # Standar
+            return 0
 
     label_map = {0: "Standar", 1: "Menengah", 2: "Loyal"}
 
-    # Update CustomerCluster
-    CustomerCluster.objects.all().delete()
+    # 🔁 GANTI NAMA MODEL SAJA
+    CustomerClassification.objects.all().delete()
+
     clusters = []
     for i, row in df_rfm.iterrows():
         pred_label = int(y_pred[i])
-        final_label_num = correct_label(row['R_score'], row['F_score'], row['M_score'], pred_label)
+        final_label_num = correct_label(
+            row['R_score'], row['F_score'], row['M_score'], pred_label
+        )
         label_str = label_map[final_label_num]
 
-        CustomerCluster.objects.create(
+        CustomerClassification.objects.create(
             user_identifier=row['email'],
-            cluster=final_label_num
+            predicted_class=final_label_num
         )
 
         clusters.append({
@@ -261,13 +258,12 @@ def run_customer_clustering(request):
             "label": label_str
         })
 
-    end_time = time.time()
-    processing_time = round(end_time - start_time, 2)
-    
+    processing_time = round(time.time() - start_time, 2)
+
     return render(request, "clustering_result.html", {
         "message": "✅ Klasifikasi pelanggan berhasil menggunakan RFM dan Decision Tree",
         "clusters": clusters,
-        "processing_time": processing_time,  # kirim ke template
+        "processing_time": processing_time,
         "accuracy": "-"
     })
 

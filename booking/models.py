@@ -49,10 +49,9 @@ class Booking(models.Model):
         return f"{self.name} - {self.service} ({self.date}) - {self.payment_status}"
 
 
-class CustomerCluster(models.Model):
-    user_identifier = models.CharField(max_length=255, default="unknown")  # bisa simpan email atau username
-    cluster = models.IntegerField()
+class CustomerClassification(models.Model):
+    user_identifier = models.CharField(max_length=255)
+    predicted_class = models.IntegerField()
 
     def __str__(self):
-        return f"{self.user_identifier} - Cluster {self.cluster}"
-
+        return f"{self.user_identifier} - Class {self.predicted_class}"
