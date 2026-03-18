@@ -6,6 +6,8 @@ from django.contrib import messages
 
 def register_view(request):
     if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -19,9 +21,19 @@ def register_view(request):
             messages.error(request, "Username sudah terpakai")
             return redirect("register")
 
-        user = User.objects.create_user(username=username, email=email, password=password)
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email sudah terpakai")
+            return redirect("register")
 
-        # Autentikasi ulang sebelum login (aman untuk multiple backend)
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
+        )
+
+        # Autentikasi ulang sebelum login
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)

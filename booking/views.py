@@ -9,6 +9,7 @@ import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
 import time
 import pandas as pd
 from datetime import datetime
@@ -166,6 +167,17 @@ def train_from_csv(request=None):
     model = DecisionTreeClassifier(max_depth=4, random_state=42)
     model.fit(X_train, y_train)
 
+    y_pred = model.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred)
+
+    cm_df = pd.DataFrame(
+        cm,
+        index=["Standar", "Menengah", "Loyal"],
+        columns=["Standar", "Menengah", "Loyal"]
+    )
+
+
+
     # Evaluasi akurasi
     accuracy = round(accuracy_score(y_test, model.predict(X_test)) * 100, 2)
 
@@ -179,6 +191,7 @@ def train_from_csv(request=None):
         "message": f"✅ Model Decision Tree berbasis RFM berhasil dilatih (Akurasi {accuracy}%)",
         "accuracy": accuracy,
         "processing_time": processing_time,  # kirim ke template
+        "confusion_matrix": cm_df,
         "clusters": []
     })
 
