@@ -6,3 +6,4 @@ scikit-learn
 joblib
 django-allauth
 PyJWT
+requests
