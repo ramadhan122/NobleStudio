@@ -11,3 +11,4 @@ requests
 cryptography
 midtransclient
 Pillow
+whitenoise
