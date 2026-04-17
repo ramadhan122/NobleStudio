@@ -34,8 +34,7 @@ FONNTE_TOKEN = "U2x8AMwDnCicKEFES9x7"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = ['noblestudio-production.up.railway.app']
 
 # Application definition
 
