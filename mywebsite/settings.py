@@ -36,6 +36,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['noblestudio-production.up.railway.app']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://noblestudio-production.up.railway.app"
+]
+
 # Application definition
 
 INSTALLED_APPS = [
