@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 ]
 
-SITE_ID = 4
+SITE_ID = 6
 
 
 MIDDLEWARE = [
