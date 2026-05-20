@@ -11,5 +11,5 @@
       "dest": "mywebsite/wsgi.py"
     }
   ],
-  "buildCommand": "python manage.py migrate"
+  "buildCommand": "python manage.py migrate && python manage.py collectstatic --noinput"
 }
