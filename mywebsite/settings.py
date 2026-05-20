@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login
 import dj_database_url
 import os
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 DATABASES = {
     'default': dj_database_url.parse(os.environ.get("POSTGRES_URL"))
 }
