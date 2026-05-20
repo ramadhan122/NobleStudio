@@ -6,7 +6,7 @@ import os
 
 DATABASES = {
     'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3'
+        default='sqlite:////tmp/db.sqlite3'
     )
 }
 

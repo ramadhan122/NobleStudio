@@ -1,0 +1,15 @@
+{
+  "builds": [
+    {
+      "src": "mywebsite/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "mywebsite/wsgi.py"
+    }
+  ],
+  "buildCommand": "python manage.py migrate"
+}
