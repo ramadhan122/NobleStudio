@@ -28,7 +28,10 @@ FONNTE_TOKEN = "U2x8AMwDnCicKEFES9x7"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['noblestudio-production.up.railway.app']
+ALLOWED_HOSTS = [
+    'noblestudio-production.up.railway.app',
+    'noble-studio.vercel.app',
+    ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://noblestudio-production.up.railway.app"
