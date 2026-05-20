@@ -4,12 +4,14 @@ from django.contrib.auth import authenticate, login
 import dj_database_url
 import os
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get("POSTGRES_URL"))
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3'
+    )
 }
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 #secure proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -26,10 +28,7 @@ FONNTE_TOKEN = "U2x8AMwDnCicKEFES9x7"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'noblestudio-production.up.railway.app',
-    'noble-studio.vercel.app',
-    ]
+ALLOWED_HOSTS = ['noblestudio-production.up.railway.app']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://noblestudio-production.up.railway.app"
