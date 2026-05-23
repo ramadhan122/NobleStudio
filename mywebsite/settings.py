@@ -22,13 +22,16 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECRET_KEY = 'django-insecure-ex+g+*he$w036ou6*ohjpsq*wi2e#&^ie2(s6=(k^18b25o^6h'
 
 # fonnte token
-FONNTE_TOKEN = "U2x8AMwDnCicKEFES9x7"
+FONNTE_TOKEN = "tS6sMLPoXozM58ef1stQ"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['noblestudio-production.up.railway.app']
+ALLOWED_HOSTS = [
+    'noblestudio-production.up.railway.app',
+    '127.0.0.1',
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://noblestudio-production.up.railway.app"

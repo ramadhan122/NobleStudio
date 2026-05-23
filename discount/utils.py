@@ -11,5 +11,9 @@ def send_wa_fonnte(phone, message):
         "message": message
     }
 
+    print("STATUS:", response.status_code)
+    print("RESPONSE:", response.text)
+    
+
     response = requests.post(url, headers=headers, data=payload)
     return response.json()

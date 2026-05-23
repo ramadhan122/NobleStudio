@@ -1,7 +1,6 @@
 import requests
 from .messages import discount_wa_message
-
-FONNTE_TOKEN = "yor-api"
+from django.conf import settings
 
 def send_discount_whatsapp(booking, discount):
     if not booking.phone:
@@ -9,14 +8,19 @@ def send_discount_whatsapp(booking, discount):
 
     message = discount_wa_message(booking, discount)
 
+    phone = booking.phone
+
+    # normalisasi nomor Indonesia
+    if phone.startswith("0"):
+        phone = "62" + phone[1:]
+
     payload = {
-        "target": booking.phone.replace("62", "").lstrip("0"),
-        "message": message,
-        "countryCode": "62"
+        "target": phone,
+        "message": message
     }
 
     headers = {
-        "Authorization": FONNTE_TOKEN
+        "Authorization": settings.FONNTE_TOKEN
     }
 
     response = requests.post(
@@ -27,3 +31,5 @@ def send_discount_whatsapp(booking, discount):
 
     print("FONNTE STATUS:", response.status_code)
     print("FONNTE RESPONSE:", response.text)
+
+    return response.text
